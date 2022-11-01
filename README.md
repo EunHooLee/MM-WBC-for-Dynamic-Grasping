@@ -9,7 +9,7 @@ Code release for the xx 2023 paper:
 * mujoco_py=2.1.2.14
 * torch==1.12.0
 * torchvision==0.13.0
-## Coment
+## Comment
 파일 다운하시고, 
 ```
 $ cd
@@ -22,7 +22,7 @@ dynamic_grasping.xml
 ```
 파일을 simulator에 끌어다 놓으면 model 확인할 수 있습니다.
 
-오른쪽에 joint property를 조정해 mobile manipulator를 움직여 볼 수 있습니다.
+오른쪽에 joint property를 조정해 mobile manipulator를 움직여 볼 수 있습니다.ㄴ
 
 ## Installation
 
