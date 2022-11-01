@@ -22,7 +22,9 @@ dynamic_grasping.xml
 ```
 파일을 simulator에 끌어다 놓으면 model 확인할 수 있습니다.
 
-오른쪽에 joint property를 조정해 mobile manipulator를 움직여 볼 수 있습니다.ㄴ
+오른쪽에 joint property를 조정해 mobile manipulator를 움직여 볼 수 있습니다.
+
+<img src="./figures/Mobile_Manipulator.png" width= "400px" height="350px" alt="Mobile Manipulator"></img>
 
 ## Installation
 
