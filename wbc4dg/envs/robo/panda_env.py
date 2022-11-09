@@ -2,7 +2,8 @@ from typing import Union
 
 import numpy as np
 
-from gymnasium_robotics.envs.robot_env import MujocoPyRobotEnv, MujocoRobotEnv
+# from gymnasium_robotics.envs.robot_env import MujocoPyRobotEnv, MujocoRobotEnv
+from wbc4dg.envs.robo.robot_env import MujocoPyRobotEnv, MujocoRobotEnv
 from gymnasium_robotics.utils import rotations
 
 

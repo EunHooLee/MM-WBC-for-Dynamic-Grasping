@@ -13,5 +13,8 @@ header file 작성이 필요하다.
 FetchReach-v3 에 대한 header file: (mujoco 만 고려, mujocopy 미고려) -> reach_header.py 확인
 ------------------------------------------------------------------------------------
 
+------------------------------------------------------------------------------------
+GoalEnv, Env 는 def __init__(self): 가 없다. robot_env.py 내 BaseRobotEnv 클래스 에서 부터 __init__() 이 존재한다. 
+즉, self.observation_space, self.action_space 의 최초 정의가 BaseRobotEnv의 __init__()에 있다. 
 
   

@@ -23,21 +23,21 @@ class BaseFetchEnv("""RobotEnvClass"""):          # MujocoRobotEnv를 상속받�
         NotImplementedError
     def _set_action(self, action):          # 무시됨 (Overrided at MujocoFetchEnv)
         NotImplementedError
-    def _get_obs(self):
+    def _get_obs(self):                     # 최종 사용
         NotImplementedError
     def generate_mujoco_observations(self): # 무시됨 (Overrided at MujocoFetchEnv)
         NotImplementedError
     def get_gripper_xpos(self):             # 무시됨 (Overrided at MujocoFetchEnv)
         NotImplementedError
-    def _viewer_setup(self):
+    def _viewer_setup(self):                # 최종 사용
         NotImplementedError
-    def _sample_goal(self):
+    def _sample_goal(self):                 # 최종 사용
         NotImplementedError
-    def _is_success(self, achieved_goal, desired_goal):
+    def _is_success(self, achieved_goal, desired_goal):     # 최종 사용
         NotImplementedError
 
 class MujocoFetchEnv("""get_base_fetch_env(MujocoRobotEnv)"""):
-    def _step_callback(self):
+    def _step_callback(self):               # 최종 사용
         NotImplementedError
     def _set_action(self, action):          # 최종 사용
         NotImplementedError
@@ -45,11 +45,11 @@ class MujocoFetchEnv("""get_base_fetch_env(MujocoRobotEnv)"""):
         NotImplementedError
     def get_gripper_xpos(self):             # 최종 사용
         NotImplementedError
-    def _render_callback(self):
+    def _render_callback(self):             # 최종 사용
         NotImplementedError
-    def _reset_sim(self):
+    def _reset_sim(self):                   # 최종 사용
         NotImplementedError
-    def _env_setup(self, initial_qpos):
+    def _env_setup(self, initial_qpos):     # 최종 사용
         NotImplementedError
 
 # ----------------------------------------------------------------------
@@ -100,25 +100,25 @@ class BaseRobotEnv(GoalEnv):
         NotImplementedError
     def _initialize_simulation(self):       # 무시됨 (Overrided at MujocoRobotEnv)
         NotImplementedError
-    def _get_obs(self):
+    def _get_obs(self):                     # 무시됨 (Overrided at BaseFetchEnv)
         NotImplementedError
-    def _set_action(self, action):
+    def _set_action(self, action):          # 무시됨 (Overrided at BaseFetchEnv, MujocoFetchEnv)
         NotImplementedError
-    def _is_success(self, achieved_goal, desired_goal):
+    def _is_success(self, achieved_goal, desired_goal):     # 무시됨 (Overrided at BaseFetchEnv)
         NotImplementedError
-    def _sample_goal(self):
+    def _sample_goal(self):                 # 무시됨 (Overrided at BaseFetchEnv)
         NotImplementedError
-    def _env_setup(self, initial_qpos):
+    def _env_setup(self, initial_qpos):     # 무시됨 (Overrided at MujocoFetchEnv)
         NotImplementedError
-    def _viewer_setup(self):
+    def _viewer_setup(self):                # 무시됨 (Overrided at BaseFetchEnv)
         NotImplementedError
-    def _render_callback(self):
+    def _render_callback(self):             # 무시됨 (Overrided at MujocoFetchEnv)
         NotImplementedError
-    def _step_callback(self):
+    def _step_callback(self):               # 무시됨 (Overrided at MujocoFetchEnv)
         NotImplementedError
 
 class MujocoRobotEnv(BaseRobotEnv):
-    def _initialize_simulation(self):
+    def _initialize_simulation(self):       # 최종 사용
         NotImplementedError
     def _reset_sim(self):                   # 무시됨 (Overriding at MujocoFetchEnv)
         NotImplementedError
