@@ -4,8 +4,9 @@ Code release for the xx 2023 paper:
 * Ubuntu==20.04.5 LTS
 * conda==22.9.0
 * python==3.7.13
-* gym==0.21.0
-* mujoco==2.3.0
+* gymnasium==0.26.3 (gymnasium-robotics install시 같이 자동 다운됨)
+* stable-baselines3==1.6.2
+* mujoco==2.2.2 (gymnasium-robotics install시 같이 자동 다운됨)
 * mujoco_py=2.1.2.14
 * torch==1.12.0
 * torchvision==0.13.0
