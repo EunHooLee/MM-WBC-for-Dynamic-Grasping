@@ -258,6 +258,7 @@ class BaseMMEnv(RobotEnvClass):
             reward_type,
             **kwargs
         ):
+            super().__init__(n_actions=4, **kwargs)
 
 class BaseRobotEnv(GoalEnv):
     """Superclass for all MuJoCo robotic environments."""
@@ -273,11 +274,11 @@ class BaseRobotEnv(GoalEnv):
 
     def __init__(
         self,
-        model_path: str,
-        initial_qpos,
-        n_actions: int,
+        model_path: str,                        # 위에 있음
+        initial_qpos,                           # 위에 있음
+        n_actions: int,                         # 위에서 따로 지정 (n_action=4)
         n_substeps: int,
-        render_mode: Optional[str] = "human",
+        render_mode: Optional[str] = "human",   # 위에 없음, 여기서 지정
         width: int = DEFAULT_SIZE,
         height: int = DEFAULT_SIZE,
     ):
