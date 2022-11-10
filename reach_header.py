@@ -206,3 +206,97 @@ class Env(Generic[ObsType, ActType]):
         NotImplementedError
     def __exit__(self, *args):
         NotImplementedError
+
+
+# --------------------------------------------------------------------------------------
+# class : __init__() summary
+
+
+class MujocoMMDynamicGraspingEnv(MujocoMMEnv, EzPickle):
+    def __init__(self, reward_type="sparse", **kwargs):
+        initial_qpos = {
+            "robot0:slide0": 0.405,
+            "robot0:slide1": 0.48,
+            "robot0:slide2": 0.0,
+            "object0:joint": [1.25, 0.53, 0.4, 1.0, 0.0, 0.0, 0.0],
+        }
+        MujocoMMEnv.__init__(
+            self,
+            model_path=MODEL_XML_PATH,
+            has_object=True,
+            block_gripper=False,
+            n_substeps=20,
+            gripper_extra_height=0.2,
+            target_in_the_air=True,
+            target_offset=0.0,
+            obj_range=0.15,
+            target_range=0.15,
+            distance_threshold=0.05,
+            initial_qpos=initial_qpos,
+            reward_type=reward_type,
+            **kwargs,
+        )
+        EzPickle.__init__(self, reward_type=reward_type, **kwargs)
+
+class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
+    NotImplementedError                                     # __init__() 없음
+
+
+class BaseMMEnv(RobotEnvClass):
+        """Superclass for all Fetch environments."""
+
+        def __init__(
+            self,
+            gripper_extra_height,
+            block_gripper,
+            has_object: bool,
+            target_in_the_air,
+            target_offset,
+            obj_range,
+            target_range,
+            distance_threshold,
+            reward_type,
+            **kwargs
+        ):
+
+class BaseRobotEnv(GoalEnv):
+    """Superclass for all MuJoCo robotic environments."""
+
+    metadata = {
+        "render_modes": [
+            "human",
+            "rgb_array",
+            "rgb_array_list",
+        ],
+        "render_fps": 25,
+    }
+
+    def __init__(
+        self,
+        model_path: str,
+        initial_qpos,
+        n_actions: int,
+        n_substeps: int,
+        render_mode: Optional[str] = "human",
+        width: int = DEFAULT_SIZE,
+        height: int = DEFAULT_SIZE,
+    ):
+
+class GoalEnv(gym.Env): # __init__() 없음
+
+
+class Env(Generic[ObsType, ActType]):
+
+    # Set this in SOME subclasses
+    metadata: Dict[str, Any] = {"render_modes": []}
+    # define render_mode if your environment supports rendering
+    render_mode: Optional[str] = None
+    reward_range = (-float("inf"), float("inf"))
+    spec: "EnvSpec" = None
+
+    # Set these in ALL subclasses
+    action_space: spaces.Space[ActType]
+    observation_space: spaces.Space[ObsType]
+
+    # Created
+    _np_random: Optional[np.random.Generator] = None
