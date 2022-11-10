@@ -21,7 +21,7 @@ from gymnasium_robotics.utils import rotations
 class BaseFetchEnv("""RobotEnvClass"""):          # MujocoRobotEnv를 상속받아서 BaseFetchEnv 로 바뚠뒤 get_base_fetch_env 함수를 이용해 MujocoFetchEnv 로 보낸다.
     def compute_reward(self, achieved_goal, goal, info):
         NotImplementedError
-    def _set_action(self, action):          # 무시됨 (Overrided at MujocoFetchEnv)
+    def _set_action(self, action):          # 무시안됨!! (Overrided at MujocoFetchEnv BUT!!!) MujocoFetchEnv에서 super()._set_action()을 이용해 여기에 있는 함수를 직접적으로 이용한다.
         NotImplementedError
     def _get_obs(self):                     # 최종 사용
         NotImplementedError
@@ -39,7 +39,7 @@ class BaseFetchEnv("""RobotEnvClass"""):          # MujocoRobotEnv를 상속받�
 class MujocoFetchEnv("""get_base_fetch_env(MujocoRobotEnv)"""):
     def _step_callback(self):               # 최종 사용
         NotImplementedError
-    def _set_action(self, action):          # 최종 사용
+    def _set_action(self, action):          # 최종 사용 아님 (super()._set_action() 이용하고 있다.)
         NotImplementedError
     def generate_mujoco_observations(self): # 최종 사용
         NotImplementedError

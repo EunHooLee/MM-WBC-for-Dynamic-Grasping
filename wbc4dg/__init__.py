@@ -9,8 +9,10 @@ def register_robotics_envs():
 
 
 register(
-    id="PandaPush",
-    entry_point="wbc4dg.envs.robo:MujocoPandaPushEnv",
+    id=f"PandaPush",
+    entry_point="wbc4dg.envs.robo:MujocoPandaReachEnv",
     kwargs={"reward_type" : ""},
     max_episode_steps=50,
 )
+
+# wbc4dg.envs.mujoco: 추가

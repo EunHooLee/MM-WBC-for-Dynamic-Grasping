@@ -1,3 +1,6 @@
 import gymnasium as gym
 
-env = gym.make("PandaPush")
+from wbc4dg.envs.mujoco import MujocoMMDynamicGraspingEnv
+
+
+env = MujocoMMDynamicGraspingEnv(reward_type="sparse")

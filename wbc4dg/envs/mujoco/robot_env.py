@@ -51,20 +51,21 @@ class BaseRobotEnv(GoalEnv):
         width: int = DEFAULT_SIZE,
         height: int = DEFAULT_SIZE,
     ):
+        # reach.py 의 model_path (fetch/reach.xml이 들어온다.)
         if model_path.startswith("/"):
             self.fullpath = model_path
         else:
             self.fullpath = os.path.join(
                 os.path.dirname(__file__), "assets", model_path
-            )
+            ) # 최종  xml 파일 생성
         if not os.path.exists(self.fullpath):
             raise OSError(f"File {self.fullpath} does not exist")
-
+        print(self.fullpath)
         self.n_substeps = n_substeps
-
+        
         self.initial_qpos = initial_qpos
 
-        self.width = width
+        self.width = width 
         self.height = height
         self._initialize_simulation()
 
@@ -110,8 +111,9 @@ class BaseRobotEnv(GoalEnv):
             raise ValueError("Action dimension mismatch")
 
         action = np.clip(action, self.action_space.low, self.action_space.high)
+        
         self._set_action(action)
-
+        
         self._mujoco_step(action)
 
         self._step_callback()
@@ -234,11 +236,12 @@ class MujocoRobotEnv(BaseRobotEnv):
         super().__init__(**kwargs)
 
     def _initialize_simulation(self):
+        
         self.model = self._mujoco.MjModel.from_xml_path(self.fullpath)
         self.data = self._mujoco.MjData(self.model)
         self._model_names = self._utils.MujocoModelNames(self.model)
-
-        self.model.vis.global_.offwidth = self.width 
+        
+        self.model.vis.global_.offwidth = self.width
         self.model.vis.global_.offheight = self.height
 
         self._env_setup(initial_qpos=self.initial_qpos)
@@ -319,7 +322,7 @@ class MujocoPyRobotEnv(BaseRobotEnv):
         self.model = self._mujoco_py.load_model_from_path(self.fullpath)
         self.sim = self._mujoco_py.MjSim(self.model, nsubsteps=self.n_substeps)
         self.data = self.sim.data
-
+        
         self._env_setup(initial_qpos=self.initial_qpos)
         self.initial_state = copy.deepcopy(self.sim.get_state())
 

@@ -37,13 +37,17 @@
 		</body> -->
 
 		<body pos="1.2 0.1 0.8" name="target_object">
-			<!-- <joint name="target_object:joint" type="free" damping="10" limited="false"></joint> -->
 			<joint name="target_object:x_joint" type="slide" damping="10" limited="true" range="-3 3" axis="1 0 0"></joint>
 			<joint name="target_object:y_joint" type="slide" damping="10" limited="true" range="-3 3" axis="0 1 0"></joint>
 			<joint name="target_object:z_joint" type="slide" damping="10" limited="true" range="-3 3" axis="0 0 1"></joint>
-			<geom size="0.05 0.05 0.05" type="box" mass="0.5" material="" condim="3" rgba="0.6 0.9 0.4 1" solimp="0.998 0.998 0.001" solref="0.001 1" friction="0.95 0.3 0.1s"/>
+			<geom size="0.05 0.05 0.05" type="box" mass="0.5" material="" condim="3" rgba="0.6 0.9 0.4 1" solimp="0.998 0.998 0.001" solref="0.001 1" friction="0.95 0.3 0.1"/>
 		</body>
-		
+		<!-- <body name="target_object" pos="0.025 0.025 0.025">
+			<joint name="target_object:joint" type="free" damping="0.01"></joint>
+			<geom size="0.025 0.025 0.025" type="box" condim="3" name="target_object" material="block_mat" mass="2"></geom>
+			<site name="target_object" pos="0 0 0" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere"></site>
+		</body>
+		 -->
 	</worldbody>
 	
 	<include file="actuator.xml"></include>

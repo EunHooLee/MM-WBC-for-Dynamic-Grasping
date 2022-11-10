@@ -2,8 +2,7 @@ from typing import Union
 
 import numpy as np
 
-# from gymnasium_robotics.envs.robot_env import MujocoPyRobotEnv, MujocoRobotEnv
-from wbc4dg.envs.robo.robot_env import MujocoPyRobotEnv, MujocoRobotEnv
+from wbc4dg.envs.mujoco.robot_env import MujocoRobotEnv, MujocoPyRobotEnv
 from gymnasium_robotics.utils import rotations
 
 
@@ -13,11 +12,11 @@ def goal_distance(goal_a, goal_b):
 
 
 def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
-    """Factory function that returns a BasePandaEnv class that inherits
+    """Factory function that returns a BaseMMEnv class that inherits
     from MujocoPyRobotEnv or MujocoRobotEnv depending on the mujoco python bindings.
     """
-
-    class BasePandaEnv(RobotEnvClass):
+    
+    class BaseMMEnv(RobotEnvClass):
         """Superclass for all Fetch environments."""
 
         def __init__(
@@ -34,6 +33,7 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
             **kwargs
         ):
             """Initializes a new Fetch environment.
+
             Args:
                 model_path (string): path to the environments XML file
                 n_substeps (int): number of substeps the simulation runs on every call to step
@@ -76,13 +76,13 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
         # ----------------------------
 
         def _set_action(self, action):
-            assert action.shape == (4,)
+            assert action.shape == (4,) # action shape가 4가 아니면 에러 발생 (action은 3DoF EE pose, 나머지 1개는 gripper)
             action = (
                 action.copy()
             )  # ensure that we don't change the action outside of this scope
             pos_ctrl, gripper_ctrl = action[:3], action[3]
 
-            pos_ctrl *= 0.05  # limit maximum change in position
+            pos_ctrl *= 0.05  # limit maximum change in position (5% 제한)
             rot_ctrl = [
                 1.0,
                 0.0,
@@ -91,10 +91,10 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
             ]  # fixed rotation of the end effector, expressed as a quaternion
             gripper_ctrl = np.array([gripper_ctrl, gripper_ctrl])
             assert gripper_ctrl.shape == (2,)
-            if self.block_gripper:
+            if self.block_gripper: #  gripper 잠김
                 gripper_ctrl = np.zeros_like(gripper_ctrl)
             action = np.concatenate([pos_ctrl, rot_ctrl, gripper_ctrl])
-
+            
             return action
 
         def _get_obs(self):
@@ -110,10 +110,10 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
                 gripper_vel,
             ) = self.generate_mujoco_observations()
 
-            if not self.has_object:
+            if not self.has_object: # 날라다니는 물체가 있는지 없는지
                 achieved_goal = grip_pos.copy()
             else:
-                achieved_goal = np.squeeze(object_pos.copy())
+                achieved_goal = np.squeeze(object_pos.copy()) # array 형태로 바꾼다. 
 
             obs = np.concatenate(
                 [
@@ -128,6 +128,7 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
                     gripper_vel,
                 ]
             )
+
 
             return {
                 "observation": obs.copy(),
@@ -170,10 +171,10 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
             d = goal_distance(achieved_goal, desired_goal)
             return (d < self.distance_threshold).astype(np.float32)
 
-    return BasePandaEnv
+    return BaseMMEnv
 
 
-class MujocoPyPandaEnv(get_base_fetch_env(MujocoPyRobotEnv)):
+class MujocoPyMMEnv(get_base_fetch_env(MujocoPyRobotEnv)):
     def _step_callback(self):
         if self.block_gripper:
             self.sim.data.set_joint_qpos("robot0:l_gripper_finger_joint", 0.0)
@@ -278,7 +279,7 @@ class MujocoPyPandaEnv(get_base_fetch_env(MujocoPyRobotEnv)):
             self.height_offset = self.sim.data.get_site_xpos("object0")[2]
 
 
-class MujocoPandaEnv(get_base_fetch_env(MujocoRobotEnv)):
+class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
     def _step_callback(self):
         if self.block_gripper:
             self._utils.set_joint_qpos(
@@ -291,7 +292,7 @@ class MujocoPandaEnv(get_base_fetch_env(MujocoRobotEnv)):
 
     def _set_action(self, action):
         action = super()._set_action(action)
-
+        
         # Apply action to simulation.
         self._utils.ctrl_set_action(self.model, self.data, action)
         self._utils.mocap_set_action(self.model, self.data, action)
@@ -299,12 +300,12 @@ class MujocoPandaEnv(get_base_fetch_env(MujocoRobotEnv)):
     def generate_mujoco_observations(self):
         # positions
         grip_pos = self._utils.get_site_xpos(self.model, self.data, "robot0:grip")
-
-        dt = self.n_substeps * self.model.opt.timestep
+        
+        dt = self.n_substeps * self.model.opt.timestep # dt 뭐냐? 
         grip_velp = (
             self._utils.get_site_xvelp(self.model, self.data, "robot0:grip") * dt
-        )
-
+        )   # self._utils.get_site_xvelp()는 뭐고 dt는 왜 곱하지?
+        
         robot_qpos, robot_qvel = self._utils.robot_get_obs(
             self.model, self.data, self._model_names.joint_names
         )
@@ -328,12 +329,12 @@ class MujocoPandaEnv(get_base_fetch_env(MujocoRobotEnv)):
             object_pos = (
                 object_rot
             ) = object_velp = object_velr = object_rel_pos = np.zeros(0)
-        gripper_state = robot_qpos[-2:]
-
+        gripper_state = robot_qpos[-2:] # 배열의 뒤에서 부터 2개
+        
         gripper_vel = (
             robot_qvel[-2:] * dt
         )  # change to a scalar if the gripper is made symmetric
-
+        
         return (
             grip_pos,
             object_pos,

@@ -4,7 +4,7 @@ from wbc4dg.envs.robo.panda_env import (
 )
 
 
-from wbc4dg.envs.robo.push import (
-    MujocoPandaPushEnv,
-    MujocoPyPandaPushEnv,
+from wbc4dg.envs.robo.reach import (
+    MujocoPandaReachEnv,
+    MujocoPyPandaReachEnv,
 )

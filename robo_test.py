@@ -1,14 +1,12 @@
-# Display FetchReach-v3 example
 import gymnasium as gym
-import os 
 
+from wbc4dg.envs.robo import MujocoPandaReachEnv
 
-# print(os.path.dirname(__file__))
-env = gym.make("FetchReach-v3", max_episode_steps=100, render_mode="human")
+env = MujocoPandaReachEnv(reward_type="sparse")
 
 obs, info = env.reset()
 
-for _ in range(10):
+for _ in range(100):
     action = env.action_space.sample()
     obs, reward, terminated, truncated, info = env.step(action)
     # print(action)
