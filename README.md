@@ -57,6 +57,10 @@ Execute sequence (Exited from last number)
 - 기존 panda는 MujocopyEnv를 사용하는데 공식 gym 은 MujocoEnv를 사용한다. 이는 import를 mujoco or mujoco_py 중 뭘쓰냐의 차이 인데 나는 당연히 MujocopyEnv써야되는것 같은데 gym 은 따른걸 썼으니까 gym 처럼 MujocoEnv를 써야 할까? 근데 중요한건 분명 현재 import mujoco 는 되는데 내부 메서드를 쓸수가 없다. 뭔가 패키지가 잘못된 것 같다. 뭐 그렇게 둘 간의 큰 차이는 없어보이니까 MujocopyEnv써보는 걸로 먼저 해봐야 겠다.
 - 내 생각에는 위 실행 순서가 (2 > 3 > 1 > 4 > 5 > 6 or 3 > 2 > 1 > 4 > 5 > 6) 이 되야 될 것 같은데 왜저런지 모르겠다.
 
+
+
+<img src="![video_1](https://user-images.githubusercontent.com/70443606/201626289-d55b5b28-4628-401f-9339-86e952189ba5.gif)">
+</img>
 ## Installation
 
 
