@@ -1,0 +1,107 @@
+<mujoco>
+    <default>
+        <!-- all geom params -->
+        <geom contype='1' conaffinity='1' margin="0.001" solimp="0.99 0.99 0.01" solref="0.01 1" condim="4" /> 
+        <!-- friction="1. 0.1 0.1" /> -->
+        <joint armature="0.01" damping=".1"/>
+
+        <!-- Default Joints position control-->
+        <default class="UR5">
+            <joint damping='200' />
+        </default>
+        <default class="UR5e">
+            <joint damping='100'/>
+        </default>
+        <!-- sub=20 -->
+        <!-- <default class="UR5">
+            <joint damping='500' />
+        </default>
+        <default class="UR5e">
+            <joint damping='100'/>
+        </default>         -->
+        <!-- Joint velocity control -->
+        <!-- <default class="UR5">
+            <joint damping='1' />
+        </default>
+        <default class="UR5e">
+            <joint damping='0.5'/>
+        </default> -->
+
+        <default class="GRIPPER">
+            <joint damping='5'/>
+            <geom rgba="0.424 0.424 0.424 1.0" contype='1' conaffinity='1' margin="0.001" solimp="0.99 0.99 0.01" solref="0.01 1" condim="4" type='mesh'/>
+        </default>
+
+        <!-- Default Colours -->
+        <default class="ur5:blue">
+            <geom rgba="0.635 0.784 0.910 1.0"></geom>
+        </default>
+        <default class="ur5:grey">
+            <geom rgba="0.365 0.365 0.365 1.0"></geom>
+        </default>
+        <default class="ur5:black">
+            <geom rgba="0.106 0.106 0.106 1.0"></geom>
+        </default>
+        <default class="husky:orange">
+            <geom rgba="0.996 0.941 0.412 1.0"></geom>
+        </default>
+        <default class="husky:black">
+            <geom rgba="0.192 0.192 0.192 1.0"></geom>
+        </default>
+        <default class="gripper:black">
+            <geom rgba="0.424 0.424 0.424 1.0"></geom>
+        </default>
+        <default class="gripper:white">
+            <geom rgba="0.898 0.898 0.898 1.0" contype='1' conaffinity='1' margin='0.001' solimp='0.99 0.99 0.01' solref='0.01 1' condim='4' type='mesh'/>
+        </default>
+        <default class="bb2_camera">
+            <geom rgba="0.776 0.624 0.294 1.0"></geom>
+        </default>
+        <default class="wheel">
+            <geom rgba="0.231 0.231 0.231 1.0"></geom>
+        </default>
+        <default class="sick_lidar">
+            <geom rgba="0.761 0.714 0.576 1.0"></geom>
+        </default>
+
+        <default class="dual_ur5_husky">
+            <geom rgba="0.761 0.714 0.576 1.0"></geom>
+        </default>
+    </default>
+
+    <actuator>
+        <!-- husky base position control -->
+        <position ctrllimited="true" ctrlrange="-10.0 10.0" joint="base_x_slide_joint" kp="18000" name="base_x_slide_joint" user="1"/>
+        <position ctrllimited="true" ctrlrange="-0.57 0.57" kp="20000" joint="base_z_hinge_joint" name="base_z_hinge_joint" user="1"/>
+        <!-- husky base velocity control -->
+        <!-- <velocity ctrllimited="true" ctrlrange="-0.01 0.01" joint="base_x_slide_joint"  name="base_x_slide_joint" user="1" ></velocity> -->
+
+        <!-- right gripper force control mode -->
+        <motor name='r_finger_1_T' ctrllimited="true" joint='r_finger_1_joint_1' ctrlrange='-0.8 .8' gear="20"/>
+        <motor name='r_finger_2_T' ctrllimited="true" joint='r_finger_2_joint_1' ctrlrange='-0.8 .8' gear="20"/>
+        <motor name='r_middle_finger_T'  ctrllimited="true" joint='r_finger_middle_joint_1' ctrlrange='-0.8 .8' gear="20"/>
+        <motor name='r_finger_scissor_T' ctrllimited="true" joint='r_palm_finger_1_joint' ctrlrange="-0.8 0.8" gear="15"/>
+
+        <!-- right ur5 arm position control -->
+        <position name="r_joint1" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="r_ur5_arm_shoulder_pan_joint" kp="4000"/>
+        <position name="r_joint2" ctrllimited="true" ctrlrange="-3.14159 0" joint="r_ur5_arm_shoulder_lift_joint" kp="3000"/>
+        <position name="r_joint3" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="r_ur5_arm_elbow_joint" kp="3000"/>
+        <position name="r_joint4" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="r_ur5_arm_wrist_1_joint" kp="2000"/>
+        <position name="r_joint5" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="r_ur5_arm_wrist_2_joint" kp="2000"/>
+        <position name="r_joint6" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="r_ur5_arm_wrist_3_joint" kp="2000"/>      
+        
+        <!-- left gripper force control mode -->
+        <motor name='l_finger_1_T' ctrllimited="true" joint='l_finger_1_joint_1' ctrlrange='-0.8 .8' gear="20"/>
+        <motor name='l_finger_2_T' ctrllimited="true" joint='l_finger_2_joint_1' ctrlrange='-0.8 .8' gear="20"/>
+        <motor name='l_middle_finger_T'  ctrllimited="true" joint='l_finger_middle_joint_1' ctrlrange='-0.8 .8' gear="20"/>
+        <motor name='l_finger_scissor_T' ctrllimited="true" joint='l_palm_finger_1_joint' ctrlrange="-0.8 0.8" gear="15"/>
+
+        <!-- left ur5 arm position control -->
+        <position name="l_joint1" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="l_ur5_arm_shoulder_pan_joint" kp="4000"/>
+        <position name="l_joint2" ctrllimited="true" ctrlrange="-1.57 1.57" joint="l_ur5_arm_shoulder_lift_joint" kp="3000"/>
+        <position name="l_joint3" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="l_ur5_arm_elbow_joint" kp="3000"/>
+        <position name="l_joint4" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="l_ur5_arm_wrist_1_joint" kp="2000"/>
+        <position name="l_joint5" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="l_ur5_arm_wrist_2_joint" kp="2000"/>
+        <position name="l_joint6" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="l_ur5_arm_wrist_3_joint" kp="2000"/>           
+    </actuator>
+</mujoco>
