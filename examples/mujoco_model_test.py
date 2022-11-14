@@ -13,13 +13,13 @@ MODEL_PATH = "../wbc4dg/envs/mujoco/assets/dynamic_grasping.xml"
 model = mujoco.MjModel.from_xml_path(MODEL_PATH)
 data  = mujoco.MjData(model)
 
-viewer = Viewer(model=model, data=data)
+# viewer = Viewer(model=model, data=data)
 _model_name = mujoco_utils.MujocoModelNames(model)
 # print("Joint name: ",_model_name.joint_names)
 
 # object_pose = mujoco_utils.get_joint_qpos(model,data,"object0")
 # print(object_pose)
-# robot_qpos, robot_qvel = mujoco_utils.robot_get_obs(model=model, data=data,joint_names=_model_name.joint_names)
+robot_qpos, robot_qvel = mujoco_utils.robot_get_obs(model=model, data=data,joint_names=_model_name.joint_names)
 
 # print("pos : ",robot_qpos)
 # print(robot_qvel)
@@ -88,7 +88,7 @@ def generate_mujoco_observations():
 while True:
     mujoco.mj_step(model, data)
     
-    # action = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])
+    # action = np.array([0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1])
     # mujoco_utils.mocap_set_action(model=model, data=data, action=action)
     (grip_pos,
     object_pos,
@@ -104,7 +104,6 @@ while True:
     #print(object_velp)
     # print(mujoco_utils.get_site_xpos(model, data, "robot0:base_link"))
     # print(mujoco_utils.get_site_xpos(model, data, "target0"))
-
-    print(grip_pos)
-    viewer.render()
+    print(object_rel_pos)
+    # viewer.render()
 

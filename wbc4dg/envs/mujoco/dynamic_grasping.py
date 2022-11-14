@@ -127,17 +127,17 @@ class MujocoMMDynamicGraspingEnv(MujocoMMEnv, EzPickle):
 
     def __init__(self, reward_type="sparse", **kwargs):
         initial_qpos = {
-            "robot0:slide0": 0.405,
-            "robot0:slide1": 0.48,
+            "robot0:slide0": 0.0,
+            "robot0:slide1": 0.0,
             "robot0:slide2": 0.0,
             "object0:joint": [1.25, 0.53, 0.4, 1.0, 0.0, 0.0, 0.0],
-        }
+        }  # object : 3 DoF position, Quaternion (one scalar, three imaginary)
         MujocoMMEnv.__init__(
             self,
             model_path=MODEL_XML_PATH,
             has_object=True,
             block_gripper=False,
-            n_substeps=20,
+            n_substeps=20,                  # 초기 _env_setup() 에서 step() 내부 값으로 사용됨.
             gripper_extra_height=0.2,
             target_in_the_air=True,
             target_offset=0.0,
@@ -151,23 +151,64 @@ class MujocoMMDynamicGraspingEnv(MujocoMMEnv, EzPickle):
         EzPickle.__init__(self, reward_type=reward_type, **kwargs)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class MujocoPyMMDynamicGraspingEnv(MujocoPyMMEnv, EzPickle):
     def __init__(self, reward_type="sparse", **kwargs):
         initial_qpos = {
             "robot0:slide0": 0.405,
             "robot0:slide1": 0.48,
             "robot0:slide2": 0.0,
-            "object0:joint": [1.25, 0.53, 0.4, 1.0, 0.0, 0.0, 0.0],
-        }
+            "object0:joint": [1.25, 0.53, 0.4, 1.0, 0.0, 0.0, 0.0], 
+        }  
         MujocoPyMMEnv.__init__(
             self,
             model_path=MODEL_XML_PATH,
-            has_object=True,
-            block_gripper=False,
-            n_substeps=20,
-            gripper_extra_height=0.2,
-            target_in_the_air=True,
-            target_offset=0.0,
+            has_object=True,                # 항상 True
+            block_gripper=False,            # 항상 False
+            n_substeps=20,                  # ?
+            gripper_extra_height=0.2,       # ? 
+            target_in_the_air=True,         # ?
+            target_offset=0.0,              # ?
             obj_range=0.15,
             target_range=0.15,
             distance_threshold=0.05,

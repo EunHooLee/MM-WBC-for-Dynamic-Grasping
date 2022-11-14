@@ -44,12 +44,12 @@ class BaseRobotEnv(GoalEnv):
     def __init__(
         self,
         model_path: str,
-        initial_qpos,
-        n_actions: int,
-        n_substeps: int,
-        render_mode: Optional[str] = "human",
-        width: int = DEFAULT_SIZE,
-        height: int = DEFAULT_SIZE,
+        initial_qpos,                       # MujocoPyMMDynamicGraspingEnv() 에서 입력
+        n_actions: int,                     # BaseMMEnv() 에서 입력
+        n_substeps: int,                    # MujocoPyMMDynamicGraspingEnv() 에서 입력
+        render_mode: Optional[str] = "human",  # 여기 값 이용
+        width: int = DEFAULT_SIZE,          # 여기 값 이용
+        height: int = DEFAULT_SIZE,         # 여기 값 이용
     ):
         # reach.py 의 model_path (fetch/reach.xml이 들어온다.)
         if model_path.startswith("/"):
@@ -60,7 +60,7 @@ class BaseRobotEnv(GoalEnv):
             ) # 최종  xml 파일 생성
         if not os.path.exists(self.fullpath):
             raise OSError(f"File {self.fullpath} does not exist")
-        print(self.fullpath)
+        
         self.n_substeps = n_substeps
         
         self.initial_qpos = initial_qpos
@@ -95,6 +95,7 @@ class BaseRobotEnv(GoalEnv):
         )
 
         self.render_mode = render_mode
+        
 
     # Env methods
     # ----------------------------
@@ -113,13 +114,14 @@ class BaseRobotEnv(GoalEnv):
         action = np.clip(action, self.action_space.low, self.action_space.high)
         
         self._set_action(action)
-        
+        # 뭔지 모르겠는데 필요없어 보임.
         self._mujoco_step(action)
-
+        # gripper 가 block 일때만 사용.
         self._step_callback()
 
         if self.render_mode == "human":
             self.render()
+        
         obs = self._get_obs()
 
         info = {
@@ -248,6 +250,7 @@ class MujocoRobotEnv(BaseRobotEnv):
         self.initial_time = self.data.time
         self.initial_qpos = np.copy(self.data.qpos)
         self.initial_qvel = np.copy(self.data.qvel)
+        # print("initial time: ",self.initial_time,"\n","inintial qpos: ", self.initial_qpos, "\n", "initial qvel: ",self.initial_qvel)
 
     def _reset_sim(self):
         self.data.time = self.initial_time
@@ -295,8 +298,47 @@ class MujocoRobotEnv(BaseRobotEnv):
     def dt(self):
         return self.model.opt.timestep * self.n_substeps
 
+    # 이 부분이 왜 필요한지를 모르겠다.
+    # 아마 step() 사이를 n_substeps 로 쪼개서 동일한 action 에 대해 n_substeps 만큼 반복하는 것 같다.
+    # 그냥 n_substeps 간 시간은 너무 짧아서 obs 의 변화가 거의 없기 때문에 일부로 여러개의 n_substeps 를 합쳐서 1개의 step 으로 사용하는 것 같다. 
     def _mujoco_step(self, action):
         self._mujoco.mj_step(self.model, self.data, nstep=self.n_substeps)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class MujocoPyRobotEnv(BaseRobotEnv):
