@@ -76,32 +76,16 @@
         <!-- husky base velocity control -->
         <!-- <velocity ctrllimited="true" ctrlrange="-0.01 0.01" joint="base_x_slide_joint"  name="base_x_slide_joint" user="1" ></velocity> -->
 
-        <!-- right gripper force control mode -->
-        <!-- <motor name='r_finger_1_T' ctrllimited="true" joint='r_finger_1_joint_1' ctrlrange='-0.8 .8' gear="20"/>
-        <motor name='r_finger_2_T' ctrllimited="true" joint='r_finger_2_joint_1' ctrlrange='-0.8 .8' gear="20"/>
-        <motor name='r_middle_finger_T'  ctrllimited="true" joint='r_finger_middle_joint_1' ctrlrange='-0.8 .8' gear="20"/>
-        <motor name='r_finger_scissor_T' ctrllimited="true" joint='r_palm_finger_1_joint' ctrlrange="-0.8 0.8" gear="15"/> -->
-
-        <!--right ur5 arm position control -->
-        <!-- <position name="r_joint1" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="r_ur5_arm_shoulder_pan_joint" kp="4000"/>
-        <position name="r_joint2" ctrllimited="true" ctrlrange="-3.14159 0" joint="r_ur5_arm_shoulder_lift_joint" kp="3000"/>
-        <position name="r_joint3" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="r_ur5_arm_elbow_joint" kp="3000"/>
-        <position name="r_joint4" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="r_ur5_arm_wrist_1_joint" kp="2000"/>
-        <position name="r_joint5" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="r_ur5_arm_wrist_2_joint" kp="2000"/>
-        <position name="r_joint6" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="r_ur5_arm_wrist_3_joint" kp="2000"/>       -->
-        
-        <!-- left gripper force control mode -->
-        <!-- <motor name='l_finger_1_T' ctrllimited="true" joint='l_finger_1_joint_1' ctrlrange='-0.8 .8' gear="20"/>
-        <motor name='l_finger_2_T' ctrllimited="true" joint='l_finger_2_joint_1' ctrlrange='-0.8 .8' gear="20"/>
-        <motor name='l_middle_finger_T'  ctrllimited="true" joint='l_finger_middle_joint_1' ctrlrange='-0.8 .8' gear="20"/>
-        <motor name='l_finger_scissor_T' ctrllimited="true" joint='l_palm_finger_1_joint' ctrlrange="-0.8 0.8" gear="15"/> -->
-
-        <!-- left ur5 arm position control -->
-        <!-- <position name="l_joint1" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="l_ur5_arm_shoulder_pan_joint" kp="4000"/>
-        <position name="l_joint2" ctrllimited="true" ctrlrange="-1.57 1.57" joint="l_ur5_arm_shoulder_lift_joint" kp="3000"/>
-        <position name="l_joint3" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="l_ur5_arm_elbow_joint" kp="3000"/>
-        <position name="l_joint4" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="l_ur5_arm_wrist_1_joint" kp="2000"/>
-        <position name="l_joint5" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="l_ur5_arm_wrist_2_joint" kp="2000"/>
-        <position name="l_joint6" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="l_ur5_arm_wrist_3_joint" kp="2000"/>            -->
+    <!-- <motor name="arm_direct_actuator_1" joint="robot0:joint1" class="panda" forcerange="-87 87" ctrlrange="-87 87"/> 
+    <motor name="arm_direct_actuator_2" joint="robot0:joint2" class="panda" forcerange="-87 87" ctrlrange="-87 87"/> 
+    <motor name="arm_direct_actuator_3" joint="robot0:joint3" class="panda" forcerange="-87 87" ctrlrange="-87 87"/> 
+    <motor name="arm_direct_actuator_4" joint="robot0:joint4" class="panda" forcerange="-87 87" ctrlrange="-87 87"/> 
+    <motor name="arm_direct_actuator_5" joint="robot0:joint5" class="panda" forcerange="-12 12" ctrlrange="-12 12"/> 
+    <motor name="arm_direct_actuator_6" joint="robot0:joint6" class="panda" forcerange="-12 12" ctrlrange="-12 12"/> 
+    <motor name="arm_direct_actuator_7" joint="robot0:joint7" class="panda" forcerange="-12 12" ctrlrange="-12 12"/>  -->
+    <!-- <motor name="gripper_direct_actuator_1" joint="panda_finger_joint1" class="panda_finger" forcerange="-70 70" ctrlrange="-70 70"/>
+    <motor name="gripper_direct_actuator_2" joint="panda_finger_joint2" class="panda_finger" forcerange="-70 70" ctrlrange="-70 70"/> -->
+	    <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:l_gripper_finger_joint" kp="30000" name="robot0:l_gripper_finger_joint" user="1"></position>
+	    <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:r_gripper_finger_joint" kp="30000" name="robot0:r_gripper_finger_joint" user="1"></position>
     </actuator>
 </mujoco>

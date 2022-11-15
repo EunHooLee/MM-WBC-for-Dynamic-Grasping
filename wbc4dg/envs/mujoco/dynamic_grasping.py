@@ -125,12 +125,14 @@ class MujocoMMDynamicGraspingEnv(MujocoMMEnv, EzPickle):
     * v1: the environment depends on `mujoco_py` which is no longer maintained.
     """
 
+    # 여기 초기값은 의미 없다. mocap을 사용하기 때문에 의미 없음
+    # mujoco_utils.py 에서 reset_mocap_welds를 바꿔줘야 한다. 
     def __init__(self, reward_type="sparse", **kwargs):
         initial_qpos = {
             "robot0:slide0": 0.0,
             "robot0:slide1": 0.0,
             "robot0:slide2": 0.0,
-            "object0:joint": [1.25, 0.53, 0.4, 1.0, 0.0, 0.0, 0.0],
+            "object0:joint": [-3.12, -3.13, -3.4, 1.0, 1.0, -1.0, -1.0],
         }  # object : 3 DoF position, Quaternion (one scalar, three imaginary)
         MujocoMMEnv.__init__(
             self,

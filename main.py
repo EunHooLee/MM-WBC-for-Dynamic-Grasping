@@ -1,8 +1,8 @@
 import gymnasium as gym
 
 from wbc4dg.envs.mujoco import MujocoMMDynamicGraspingEnv
-from gymnasium_robotics.utils import mujoco_utils
-
+# from gymnasium_robotics.utils import mujoco_utils
+from wbc4dg.envs.mujoco import mujoco_utils
 
 # MODEL_XML_PATH = "dynamic_grasping.xml"
 
@@ -16,7 +16,8 @@ obs, info = env.reset()
 # observation, reward, terminated, truncated, info = env.step(action)
 
 for _ in range(1000):
-    action = env.action_space.sample()*10
+
+    action = env.action_space.sample()*1
     observation, reward, terminated, truncated, info = env.step(action)
     # print(observation)
 env.close()

@@ -20,7 +20,8 @@ else:
 try:
     import mujoco
 
-    from gymnasium_robotics.utils import mujoco_utils
+    # from gymnasium_robotics.utils import mujoco_utils
+    from wbc4dg.envs.mujoco import mujoco_utils
 except ImportError as e:
     MUJOCO_IMPORT_ERROR = e
 else:
@@ -60,6 +61,7 @@ class BaseRobotEnv(GoalEnv):
             ) # 최종  xml 파일 생성
         if not os.path.exists(self.fullpath):
             raise OSError(f"File {self.fullpath} does not exist")
+        
         
         self.n_substeps = n_substeps
         
@@ -238,7 +240,7 @@ class MujocoRobotEnv(BaseRobotEnv):
         super().__init__(**kwargs)
 
     def _initialize_simulation(self):
-        
+        print(self.fullpath)
         self.model = self._mujoco.MjModel.from_xml_path(self.fullpath)
         self.data = self._mujoco.MjData(self.model)
         self._model_names = self._utils.MujocoModelNames(self.model)

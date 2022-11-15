@@ -58,8 +58,8 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
             self.target_range = target_range
             self.distance_threshold = distance_threshold
             self.reward_type = reward_type
-
-            super().__init__(n_actions=4, **kwargs)         # n_action=4 -> 6 : 3 EE pos, 2 base pse, 1 gripper
+            self.a = 0 
+            super().__init__(n_actions=6, **kwargs)         # n_action=4 -> 6 : 3 EE pos, 2 base pse, 1 gripper
                                                             # Arm 을 base frame 대비 움직일 수 있는 방법이 있을까? 뭐가 좋지? 
 
         # GoalEnv methods
@@ -77,15 +77,30 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
         # ----------------------------
 
         def _set_action(self, action):
-            assert action.shape == (4,) # action shape가 4가 아니면 에러 발생 (action은 3DoF EE pose, 나머지 1개는 gripper)
+            assert action.shape == (6,) # action shape가 4가 아니면 에러 발생 (action은 3DoF EE pose, 나머지 1개는 gripper)
             action = (
                 action.copy()
             )  # ensure that we don't change the action outside of this scope
             # print(action)
-            # base_ctrl, pos_ctrl, gripper_ctrl = action[:2] ,action[2:5], action[5]
-            pos_ctrl, gripper_ctrl = action[:3] ,action[3]
+            base_pos_ctrl, pos_ctrl, gripper_ctrl = action[:2] ,action[2:5], action[5]
+            
+            # pos_ctrl, gripper_ctrl = action[:3] ,action[3]
+            
+            # base_pos_ctrl = np.append(base_pos_ctrl,0)
+            self.a +=0.1
+            base_pos_ctrl = np.array([self.a, 0.0, 0.0])
+            # Quaternion : (x,y,z,w) : 회전축, 회전각도
+            base_pos_ctrl *= 0.05
+            base_rot_ctrl = [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+            ]
+
+
             # 아래 2개 지워도 될듯
-            pos_ctrl *= 0.05  # limit maximum change in position (5% 제한)
+            pos_ctrl *= 0.0  # limit maximum change in position (5% 제한)
             rot_ctrl = [
                 1.0,
                 0.0,
@@ -99,8 +114,8 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
             if self.block_gripper: #  gripper 잠김
                 gripper_ctrl = np.zeros_like(gripper_ctrl)
 
-            action = np.concatenate([pos_ctrl, rot_ctrl, gripper_ctrl])
-            print(action)
+            action = np.concatenate([base_pos_ctrl, base_rot_ctrl, pos_ctrl, rot_ctrl, gripper_ctrl])
+            # print(action)
             return action
 
         def _get_obs(self):
@@ -117,7 +132,7 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
                 grip_velp,
                 gripper_vel,
             ) = self.generate_mujoco_observations()
-
+            #  print("grip pose ",grip_pos, "object pos ", object_pos)
             if not self.has_object: # 날라다니는 물체가 있는지 없는지
                 achieved_goal = grip_pos.copy()
             else:
@@ -433,7 +448,7 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
 
         self._mujoco.mj_forward(self.model, self.data)
         return True
-
+# 이부분 차원 바꿔야 될 것 같다. 
     def _env_setup(self, initial_qpos):
         for name, value in initial_qpos.items():
             self._utils.set_joint_qpos(self.model, self.data, name, value)
