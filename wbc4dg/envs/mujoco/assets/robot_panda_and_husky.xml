@@ -1,12 +1,13 @@
 <mujoco>
-
-
+    
+    
     <body mocap="true" name="robot0_base:mocap" pos="0 0 0">
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.7" size="0.005 0.005 0.005" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="1 0.005 0.005" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="0.005 1 0.001" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="0.005 0.005 1" type="box"></geom>
 	</body>
+    
     <body mocap="true" name="robot0_gripper:mocap" pos="0 0 0">
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.7" size="0.005 0.005 0.005" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="1 0.005 0.005" type="box"></geom>
@@ -71,7 +72,7 @@
         <body name="link0" pos="0.25 0.0 0.42">
             <geom name="bb" type="mesh" mesh="link_base" material="robot0:base_mat" rgba="1 1 1 1"/>
             <geom class="visual" mesh="link0_visual"/>
-            <site name="robot0:link0" pos="0.0 0.0 0.0" size="0.02" rgba="1 0 0 1" type="sphere"></site>
+            <site name="robot0:base" pos="0.0 0.0 0.0" size="0.02" rgba="1 0 0 1" type="sphere"></site>
             <!-- <geom class="collision" mesh="link0_collision"/> -->
 
             <body name="link1" pos="0 0 0.333">

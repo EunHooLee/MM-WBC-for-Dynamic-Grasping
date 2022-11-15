@@ -126,6 +126,7 @@ def reset_mocap2body_xpos(model, data):
     """Resets the position and orientation of the mocap bodies to the same
     values as the bodies they're welded to.
     """
+
     
     if model.eq_type is None or model.eq_obj1id is None or model.eq_obj2id is None:
         return
@@ -136,6 +137,7 @@ def reset_mocap2body_xpos(model, data):
             continue
 
         mocap_id = model.body_mocapid[obj1_id]
+        print("mocap_id>>>>>", mocap_id)
         if mocap_id != -1:
             # obj1 is the mocap, obj2 is the welded body
             body_idx = obj2_id
@@ -147,7 +149,9 @@ def reset_mocap2body_xpos(model, data):
         assert mocap_id != -1
         data.mocap_pos[mocap_id][:] = data.xpos[body_idx]
         data.mocap_quat[mocap_id][:] = data.xquat[body_idx]
-    # print("reset : ",model.body_mocapid)
+    print("body_mocapid : ",model.body_mocapid)
+    print("1", obj1_id)
+    print("2", obj2_id)
         
 
 
