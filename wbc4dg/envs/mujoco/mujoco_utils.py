@@ -81,6 +81,7 @@ def mocap_set_action(model, data, action):
     constraint optimizer tries to center the welded body on the mocap.
     """
     if model.nmocap > 0:
+        
         action, _, = np.split(action, (model.nmocap * 7,))
         
         action = action.reshape(model.nmocap, 7)                # 7 : x , y, z , quaternion
@@ -113,10 +114,11 @@ def reset_mocap_welds(model, data):
     if model.nmocap > 0 and model.eq_data is not None:
         # print(model.eq_data)        # (2,11)
         for i in range(model.eq_data.shape[0]):
-            print(model.eq_type)
+            # print(model.eq_type)    # [1]  // [1 1]
             if model.eq_type[i] == mujoco.mjtEq.mjEQ_WELD:
                 model.eq_data[i, :7] = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]) # 이게 joint angle or 3D pos + 4 quaternion
-    
+                #print(model.eq_data)
+    # print("reset")
     mujoco.mj_forward(model, data)
 
 
@@ -124,7 +126,7 @@ def reset_mocap2body_xpos(model, data):
     """Resets the position and orientation of the mocap bodies to the same
     values as the bodies they're welded to.
     """
-
+    
     if model.eq_type is None or model.eq_obj1id is None or model.eq_obj2id is None:
         return
     for eq_type, obj1_id, obj2_id in zip(
@@ -145,6 +147,8 @@ def reset_mocap2body_xpos(model, data):
         assert mocap_id != -1
         data.mocap_pos[mocap_id][:] = data.xpos[body_idx]
         data.mocap_quat[mocap_id][:] = data.xquat[body_idx]
+    # print("reset : ",model.body_mocapid)
+        
 
 
 def get_site_jacp(model, data, site_id):
@@ -276,9 +280,10 @@ def get_site_xvelr(model, data, name):
 
 def set_mocap_pos(model, data, name, value):
     body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, name)
+    print(name, " ", body_id)
     mocap_id = model.body_mocapid[body_id]
     data.mocap_pos[mocap_id] = value
-
+    print("mocap_id:  ", mocap_id)
 
 def set_mocap_quat(model: MjModel, data: MjData, name: str, value):
     body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, name)

@@ -462,9 +462,20 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         ) + self._utils.get_site_xpos(self.model, self.data, "robot0:grip") # 현재 gripper 위치 + gripper_extra_height + 이상한 값
 
         gripper_rotation = np.array([1.0, 0.0, 1.0, 0.0])
-        self._utils.set_mocap_pos(self.model, self.data, "robot0:mocap", gripper_target)
+
+        base_target = np.array([0.0, 0.0, 0.0])
+        base_rotation = np.array([1.0, 0.0, 0.0, 0.0])
+
+        
+        self._utils.set_mocap_pos(self.model, self.data, "robot0_base:mocap", base_target)
         self._utils.set_mocap_quat(
-            self.model, self.data, "robot0:mocap", gripper_rotation
+            self.model, self.data, "robot0_base:mocap", base_rotation
+        )
+    
+
+        self._utils.set_mocap_pos(self.model, self.data, "robot0_gripper:mocap", gripper_target)
+        self._utils.set_mocap_quat(
+            self.model, self.data, "robot0_gripper:mocap", gripper_rotation
         )
 
         for _ in range(10):

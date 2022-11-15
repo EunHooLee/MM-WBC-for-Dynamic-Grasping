@@ -1,12 +1,12 @@
 <mujoco>
 
 
-    <!-- <body mocap="true" name="robot0_base:mocap" pos="0 0 0">
+    <body mocap="true" name="robot0_base:mocap" pos="0 0 0">
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.7" size="0.005 0.005 0.005" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="1 0.005 0.005" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="0.005 1 0.001" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="0.005 0.005 1" type="box"></geom>
-	</body> -->
+	</body>
     <body mocap="true" name="robot0_gripper:mocap" pos="0 0 0">
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.7" size="0.005 0.005 0.005" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="1 0.005 0.005" type="box"></geom>
@@ -15,7 +15,7 @@
 	</body>
 
     
-    <body name="robot0:base_link" pos="0.0 0.0 0.14493" mocap="true">
+    <body name="robot0:base_link" pos="0.0 0.0 0.14493">
     <!-- <body name="robot0:base_link" pos="0 0 0.061875" > -->
         <!-- <geom mesh="base_link" name="robot0:base_link" material="robot0:base_mat" class="robot0:grey"></geom> -->
         <geom name="base_link_visual" type="mesh" contype="0" conaffinity="0" group="1" mesh="mobile_base_link" />
