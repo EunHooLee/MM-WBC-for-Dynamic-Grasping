@@ -99,10 +99,10 @@ def mocap_set_action(model, data, action):
         
         data.mocap_pos[0,:] = data.mocap_pos[0,:] + pos_delta_base
         data.mocap_pos[1,:] = data.mocap_pos[1,:] + pos_delta_ee
-        print(pos_delta_base)
+        # print(pos_delta_base)
         data.mocap_quat[0,:] = data.mocap_quat[0,:] + quat_delta_base
         data.mocap_quat[1,:] = data.mocap_quat[1,:] + quat_delta_ee
-        # print(pos_delta_ee)
+        
 
         # data.mocap_pos[:] = data.mocap_pos + pos_delta
         # data.mocap_quat[:] = data.mocap_quat + quat_delta
@@ -111,9 +111,12 @@ def mocap_set_action(model, data, action):
 def reset_mocap_welds(model, data):
     """Resets the mocap welds that we use for actuation."""
     if model.nmocap > 0 and model.eq_data is not None:
+        # print(model.eq_data)        # (2,11)
         for i in range(model.eq_data.shape[0]):
+            print(model.eq_type)
             if model.eq_type[i] == mujoco.mjtEq.mjEQ_WELD:
                 model.eq_data[i, :7] = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]) # 이게 joint angle or 3D pos + 4 quaternion
+    
     mujoco.mj_forward(model, data)
 
 

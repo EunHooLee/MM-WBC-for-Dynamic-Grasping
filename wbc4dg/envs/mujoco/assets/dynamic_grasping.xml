@@ -6,7 +6,7 @@
 
 		<geom name="floor0" pos="0. 0. 0.0" size="3 3 0.125" type="plane" condim="3" material="floorplane"></geom>
 		<body name="floor0" pos="0. 0. 0.0">
-			<!-- <site name="target0" pos="0 0 0.5" size="0.02 0.02 0.02" rgba="0 1 0 1" type="sphere"></site> -->
+			<site name="target0" pos="0 0 0.5" size="0.02 0.02 0.02" rgba="0 1 0 1" type="sphere"></site>
 		</body>
 
 		<light directional="true" ambient="0.2 0.2 0.2" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3" castshadow="false" pos="0 0 4" dir="0 0 -1" name="light0"></light>

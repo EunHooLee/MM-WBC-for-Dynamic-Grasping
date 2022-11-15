@@ -100,7 +100,7 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
 
 
             # 아래 2개 지워도 될듯
-            pos_ctrl *= 0.0  # limit maximum change in position (5% 제한)
+            pos_ctrl *= 0.05  # limit maximum change in position (5% 제한)
             rot_ctrl = [
                 1.0,
                 0.0,

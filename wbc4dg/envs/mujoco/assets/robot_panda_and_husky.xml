@@ -1,12 +1,12 @@
 <mujoco>
 
 
-    <body mocap="true" name="robot0_base:mocap" pos="0 0 0">
+    <!-- <body mocap="true" name="robot0_base:mocap" pos="0 0 0">
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.7" size="0.005 0.005 0.005" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="1 0.005 0.005" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="0.005 1 0.001" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="0.005 0.005 1" type="box"></geom>
-	</body>
+	</body> -->
     <body mocap="true" name="robot0_gripper:mocap" pos="0 0 0">
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.7" size="0.005 0.005 0.005" type="box"></geom>
 		<geom conaffinity="0" contype="0" pos="0 0 0" rgba="0 0.5 0 0.1" size="1 0.005 0.005" type="box"></geom>
@@ -15,7 +15,7 @@
 	</body>
 
     
-    <body name="robot0:base_link" pos="0.0 0.0 0.14493" >
+    <body name="robot0:base_link" pos="0.0 0.0 0.14493" mocap="true">
     <!-- <body name="robot0:base_link" pos="0 0 0.061875" > -->
         <!-- <geom mesh="base_link" name="robot0:base_link" material="robot0:base_mat" class="robot0:grey"></geom> -->
         <geom name="base_link_visual" type="mesh" contype="0" conaffinity="0" group="1" mesh="mobile_base_link" />
@@ -23,9 +23,9 @@
         <!-- <geom size="0.4937 0.28545 0.061875" pos="0 0 0.061875" type="box" /> -->
         <!-- <site name="robot0:base_link" pos="0.0 0.0 0.0" size="0.02" rgba="1 0 0 1" type="sphere"></site> -->
 
-		<joint armature="0.0001" axis="1 0 0" damping="1e+11" name="robot0:slide0" pos="0 0 0" type="slide" limited="false"></joint>
+		<!-- <joint armature="0.0001" axis="1 0 0" damping="1e+11" name="robot0:slide0" pos="0 0 0" type="slide" limited="false"></joint>
 		<joint armature="0.0001" axis="0 1 0" damping="1e+11" name="robot0:slide1" pos="0 0 0" type="slide" limited="false"></joint>
-		<joint armature="0.0001" axis="0 0 1" damping="1e+0" name="robot0:slide2" pos="0 0 0" type="slide" limited="false"></joint>
+		<joint armature="0.0001" axis="0 0 1" damping="1e+0" name="robot0:slide2" pos="0 0 0" type="slide" limited="false"></joint> -->
 		<inertial diaginertia="1.2869 1.2236 0.9868" mass="70.1294" pos="-0.0036 0 0.0014" quat="0.7605 -0.0133 -0.0061 0.6491"></inertial>
 
 
