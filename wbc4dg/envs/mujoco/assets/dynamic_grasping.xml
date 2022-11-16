@@ -19,10 +19,13 @@
 
 		<body pos="1.2 0.1 0.8" name="object0">
 			<joint name="object0:joint" type="free" limited="false"></joint>
-			<geom size="0.05 0.05 0.05" type="box" mass="0.5" material="" condim="3" rgba="0.6 0.9 0.4 1" solimp="0.998 0.998 0.001" solref="0.001 1" friction="0.95 0.3 0.1"/>
+			<!-- <joint armature="0.0001" axis="1 0 0" damping="1e+11" name="robot0:object1" pos="0 0 0" type="slide" limited="false"></joint>
+			<joint armature="0.0001" axis="0 1 0" damping="1e+11" name="robot0:object2" pos="0 0 0" type="slide" limited="false"></joint>
+			<joint armature="0.0001" axis="0 0 1" damping="1e+11" name="robot0:object3" pos="0 0 0" type="slide" limited="false"></joint> -->
+			<geom size="0.05 0.05 0.05" type="box" mass="0.5" material="" density="50000" condim="3" rgba="0.6 0.9 0.4 1" solimp="0.998 0.998 0.001" solref="0.001 1" friction="0.95 0.3 0.1"/>
 			<site name="object0" pos="0.0 0.0 0.0" size="0.02" rgba="1 0 0 1" type="sphere"></site>
 		</body>
-
+		
 		
 	</worldbody>
 

@@ -50,27 +50,6 @@ def ctrl_set_action(model, data, action):
                 data.ctrl[i] = data.qpos[idx] + action[i]
 
 
-# def mocap_set_action(model, data, action):
-#     """The action controls the robot using mocaps. Specifically, bodies
-#     on the robot (for example the gripper wrist) is controlled with
-#     mocap bodies. In this case the action is the desired difference
-#     in position and orientation (quaternion), in world coordinates,
-#     of the target body. The mocap is positioned relative to
-#     the target body according to the delta, and the MuJoCo equality
-#     constraint optimizer tries to center the welded body on the mocap.
-#     """
-#     if model.nmocap > 0:
-#         action, _ = np.split(action, (model.nmocap * 7,))
-#         # print(model.nmocap * 7 )
-#         action = action.reshape(model.nmocap, 7)                # 7 : x , y, z , quaternion
-#         # print(action)
-#         pos_delta = action[:, :3]
-#         quat_delta = action[:, 3:]
-
-#         reset_mocap2body_xpos(model, data)
-#         data.mocap_pos[:] = data.mocap_pos + pos_delta
-#         data.mocap_quat[:] = data.mocap_quat + quat_delta
-
 def mocap_set_action(model, data, action):
     """The action controls the robot using mocaps. Specifically, bodies
     on the robot (for example the gripper wrist) is controlled with
@@ -81,32 +60,54 @@ def mocap_set_action(model, data, action):
     constraint optimizer tries to center the welded body on the mocap.
     """
     if model.nmocap > 0:
-        
-        action, _, = np.split(action, (model.nmocap * 7,))
-        
+        action, _ = np.split(action, (model.nmocap * 7,))
+        # print(model.nmocap * 7 )
         action = action.reshape(model.nmocap, 7)                # 7 : x , y, z , quaternion
-        # print("action : ",action)
         # print(action)
-        pos_delta_base = action[0, :3]
-        quat_delta_base = action[0,3:]
-       
-        pos_delta_ee = action[1, :3]
-        quat_delta_ee = action[1, 3:]
-        
-        # pos_delta = action[:, :3]
-        # quat_delta = action[:, 3:]
+        pos_delta = action[:, :3]
+        quat_delta = action[:, 3:]
         
         reset_mocap2body_xpos(model, data)
+        data.mocap_pos[:] = data.mocap_pos + pos_delta
+        data.mocap_quat[:] = data.mocap_quat + quat_delta
+        # print(data.mocap_pos[0,0])
+
+# def mocap_set_action(model, data, action):
+#     """The action controls the robot using mocaps. Specifically, bodies
+#     on the robot (for example the gripper wrist) is controlled with
+#     mocap bodies. In this case the action is the desired difference
+#     in position and orientation (quaternion), in world coordinates,
+#     of the target body. The mocap is positioned relative to
+#     the target body according to the delta, and the MuJoCo equality
+#     constraint optimizer tries to center the welded body on the mocap.
+#     """
+#     if model.nmocap > 0:
         
-        data.mocap_pos[0,:] = data.mocap_pos[0,:] + pos_delta_base
-        data.mocap_pos[1,:] = data.mocap_pos[1,:] + pos_delta_ee
-        # print(pos_delta_base)
-        data.mocap_quat[0,:] = data.mocap_quat[0,:] + quat_delta_base
-        data.mocap_quat[1,:] = data.mocap_quat[1,:] + quat_delta_ee
+#         action, _, = np.split(action, (model.nmocap * 7,))
+        
+#         action = action.reshape(model.nmocap, 7)                # 7 : x , y, z , quaternion
+#         # print("action : ",action)
+#         # print(action)
+#         pos_delta_base = action[0, :3]
+#         quat_delta_base = action[0,3:]
+       
+#         pos_delta_ee = action[1, :3]
+#         quat_delta_ee = action[1, 3:]
+        
+#         # pos_delta = action[:, :3]
+#         # quat_delta = action[:, 3:]
+        
+#         reset_mocap2body_xpos(model, data)
+        
+#         data.mocap_pos[0,:] = data.mocap_pos[0,:] + pos_delta_base
+#         data.mocap_pos[1,:] = data.mocap_pos[1,:] + pos_delta_ee
+#         # print(pos_delta_base)
+#         data.mocap_quat[0,:] = data.mocap_quat[0,:] + quat_delta_base
+#         data.mocap_quat[1,:] = data.mocap_quat[1,:] + quat_delta_ee
         
 
-        # data.mocap_pos[:] = data.mocap_pos + pos_delta
-        # data.mocap_quat[:] = data.mocap_quat + quat_delta
+#         # data.mocap_pos[:] = data.mocap_pos + pos_delta
+#         # data.mocap_quat[:] = data.mocap_quat + quat_delta
 
 
 def reset_mocap_welds(model, data):
@@ -137,7 +138,7 @@ def reset_mocap2body_xpos(model, data):
             continue
 
         mocap_id = model.body_mocapid[obj1_id]
-        print("mocap_id>>>>>", mocap_id)
+        # print("mocap_id>>>>>", mocap_id)
         if mocap_id != -1:
             # obj1 is the mocap, obj2 is the welded body
             body_idx = obj2_id
@@ -149,9 +150,7 @@ def reset_mocap2body_xpos(model, data):
         assert mocap_id != -1
         data.mocap_pos[mocap_id][:] = data.xpos[body_idx]
         data.mocap_quat[mocap_id][:] = data.xquat[body_idx]
-    print("body_mocapid : ",model.body_mocapid)
-    print("1", obj1_id)
-    print("2", obj2_id)
+
         
 
 
@@ -284,10 +283,10 @@ def get_site_xvelr(model, data, name):
 
 def set_mocap_pos(model, data, name, value):
     body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, name)
-    print(name, " ", body_id)
+    # print(name, " ", body_id)
     mocap_id = model.body_mocapid[body_id]
     data.mocap_pos[mocap_id] = value
-    print("mocap_id:  ", mocap_id)
+    # print("mocap_id:  ", mocap_id)
 
 def set_mocap_quat(model: MjModel, data: MjData, name: str, value):
     body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, name)

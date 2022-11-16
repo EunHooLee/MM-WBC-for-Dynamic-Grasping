@@ -15,7 +15,7 @@ obs, info = env.reset()
 # action = env.action_space.sample()
 # observation, reward, terminated, truncated, info = env.step(action)
 
-for _ in range(10):
+for _ in range(10000):
 
     action = env.action_space.sample()*1
     observation, reward, terminated, truncated, info = env.step(action)

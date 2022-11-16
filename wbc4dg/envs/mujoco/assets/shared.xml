@@ -157,7 +157,7 @@
         <!-- <weld body2="gripper_r:mocap" body1="r_gripper_palm_link" solimp="0.9 0.95 0.001" solref="0.02 1"></weld> -->
         <!-- <weld body2="gripper_r:mocap" body1="ee_link" solimp="0.9 0.95 0.001" solref="0.02 1"></weld> -->
         <!-- <weld body2="gripper_r:mocap" body1="object0" solimp="0.9 0.95 0.001" solref="0.02 1"></weld> -->
-        <weld body1 = "robot0_base:mocap" body2="link0" solimp="0.9 0.95 0.001" solref="0.02 1"></weld>
+        <!-- <weld body1 = "robot0_base:mocap" body2="link0" solimp="0.9 0.95 0.001" solref="0.02 1"></weld> -->
         <weld body1 = "robot0_gripper:mocap" body2="panda_hand" solimp="0.9 0.95 0.001" solref="0.02 1"></weld>
     </equality>
 
