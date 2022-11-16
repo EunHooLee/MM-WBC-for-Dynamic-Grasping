@@ -40,14 +40,22 @@ def ctrl_set_action(model, data, action):
     """
     if model.nmocap > 0:
         _, action = np.split(action, (model.nmocap * 7,))
-
+        # We don't use mocap 
+    # print(len(data.ctrl))     # 11 (except object0:joint - It's free, know.)
+    # print(data.ctrl)
+    
     if len(data.ctrl) > 0:
         for i in range(action.shape[0]):
-            if model.actuator_biastype[i] == 0:
-                data.ctrl[i] = action[i]
-            else:
-                idx = model.jnt_qposadr[model.actuator_trnid[i, 0]]
-                data.ctrl[i] = data.qpos[idx] + action[i]
+            # motor position control
+            idx = model.jnt_qposadr[model.actuator_trnid[i,0]]
+            data.ctrl[i] = data.qpos[idx] + action[i]
+            # print(i)
+
+            # if model.actuator_biastype[i] == 0:
+            #     data.ctrl[i] = action[i]
+            # else:
+            #     idx = model.jnt_qposadr[model.actuator_trnid[i, 0]]
+            #     data.ctrl[i] = data.qpos[idx] + action[i]
 
 
 def mocap_set_action(model, data, action):
@@ -176,10 +184,26 @@ def get_site_jacr(model, data, site_id):
 
 def set_joint_qpos(model, data, name, value):
     """Set the joint positions (qpos) of the model."""
+    """
+    name                           | id
+    ----------------------------------
+    robot0:base_joint1             | 0
+    robot0:base_joint2             | 1
+    robot0:joint1                  | 2
+    robot0:joint2                  | 3
+    robot0:joint3                  | 4
+    robot0:joint4                  | 5
+    robot0:joint5                  | 6
+    robot0:joint6                  | 7
+    robot0:joint7                  | 8
+    robot0:l_gripper_finger_joint  | 9
+    robot0:r_gripper_finger_joint  | 10
+    object0:joint                  | 11
+    """
     joint_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, name)
     joint_type = model.jnt_type[joint_id]
     joint_addr = model.jnt_qposadr[joint_id]
-
+    # print(name, " " , joint_id)
     if joint_type == mujoco.mjtJoint.mjJNT_FREE:
         ndim = 7
     elif joint_type == mujoco.mjtJoint.mjJNT_BALL:
@@ -195,6 +219,7 @@ def set_joint_qpos(model, data, name, value):
         assert value.shape == (
             end_idx - start_idx
         ), f"Value has incorrect shape {name}: {value}"
+    
     data.qpos[start_idx:end_idx] = value
 
 
@@ -227,7 +252,7 @@ def get_joint_qpos(model, data, name):
     joint_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, name)
     joint_type = model.jnt_type[joint_id]
     joint_addr = model.jnt_qposadr[joint_id]
-
+    # print(name, ""Mjoint_id)
     if joint_type == mujoco.mjtJoint.mjJNT_FREE:
         ndim = 7
     elif joint_type == mujoco.mjtJoint.mjJNT_BALL:
@@ -270,6 +295,7 @@ def get_site_xpos(model, data, name):
 def get_site_xvelp(model, data, name):
     site_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, name)
     jacp = get_site_jacp(model, data, site_id)
+    # print(jacp)
     xvelp = jacp @ data.qvel
     return xvelp
 
@@ -281,17 +307,17 @@ def get_site_xvelr(model, data, name):
     return xvelp
 
 
-def set_mocap_pos(model, data, name, value):
-    body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, name)
-    # print(name, " ", body_id)
-    mocap_id = model.body_mocapid[body_id]
-    data.mocap_pos[mocap_id] = value
-    # print("mocap_id:  ", mocap_id)
+# def set_mocap_pos(model, data, name, value):
+#     body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, name)
+#     # print(name, " ", body_id)
+#     mocap_id = model.body_mocapid[body_id]
+#     data.mocap_pos[mocap_id] = value
+#     # print("mocap_id:  ", mocap_id)
 
-def set_mocap_quat(model: MjModel, data: MjData, name: str, value):
-    body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, name)
-    mocap_id = model.body_mocapid[body_id]
-    data.mocap_quat[mocap_id] = value
+# def set_mocap_quat(model: MjModel, data: MjData, name: str, value):
+#     body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, name)
+#     mocap_id = model.body_mocapid[body_id]
+#     data.mocap_quat[mocap_id] = value
 
 
 def get_site_xmat(model: MjModel, data: MjData, name: str):

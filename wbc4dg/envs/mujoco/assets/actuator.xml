@@ -85,7 +85,20 @@
     <motor name="arm_direct_actuator_7" joint="robot0:joint7" class="panda" forcerange="-12 12" ctrlrange="-12 12"/>  -->
     <!-- <motor name="gripper_direct_actuator_1" joint="panda_finger_joint1" class="panda_finger" forcerange="-70 70" ctrlrange="-70 70"/>
     <motor name="gripper_direct_actuator_2" joint="panda_finger_joint2" class="panda_finger" forcerange="-70 70" ctrlrange="-70 70"/> -->
-	    <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:l_gripper_finger_joint" kp="30000" name="robot0:l_gripper_finger_joint" user="1"></position>
-	    <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:r_gripper_finger_joint" kp="30000" name="robot0:r_gripper_finger_joint" user="1"></position>
+        <position ctrllimited="true" ctrlrange="-10.0 10.0" joint="robot0:base_joint1" kp="18000" name="robot0:base_joint1" user="1"/>
+        <position ctrllimited="true" ctrlrange="-10.0 10.0" joint="robot0:base_joint2" kp="18000" name="robot0:base_joint2" user="1"/>
+
+
+        <!-- Arm: motor position control -->
+        <position name="arm_joint1" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint1" kp="4000"/>
+        <position name="arm_joint2" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint2" kp="3000"/>
+        <position name="arm_joint3" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint3" kp="3000"/>
+        <position name="arm_joint4" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint4" kp="2000"/>
+        <position name="arm_joint5" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint5" kp="2000"/>
+        <position name="arm_joint6" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint6" kp="2000"/>
+        <position name="arm_joint7" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint7" kp="2000"/>
+        
+        <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:l_gripper_finger_joint" kp="30000" name="robot0:l_gripper_finger_joint" user="1"></position>
+        <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:r_gripper_finger_joint" kp="30000" name="robot0:r_gripper_finger_joint" user="1"></position>
     </actuator>
 </mujoco>

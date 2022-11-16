@@ -112,14 +112,16 @@ class BaseRobotEnv(GoalEnv):
     def step(self, action):
         if np.array(action).shape != self.action_space.shape:
             raise ValueError("Action dimension mismatch")
-
+        
         action = np.clip(action, self.action_space.low, self.action_space.high)
         
         self._set_action(action)
-        # 뭔지 모르겠는데 필요없어 보임.
-        self._mujoco_step(action)
+        
+        # _mujoco_step()에 action안들어가도 됨 그래서 빼버림
+        self._mujoco_step()
+
         # gripper 가 block 일때만 사용.
-        self._step_callback()
+        # self._step_callback()
 
         if self.render_mode == "human":
             self.render()
@@ -152,6 +154,7 @@ class BaseRobotEnv(GoalEnv):
         did_reset_sim = False
         while not did_reset_sim:
             did_reset_sim = self._reset_sim()
+            # 새로 시작할때마다 goal sampling
         self.goal = self._sample_goal().copy()
         obs = self._get_obs()
         if self.render_mode == "human":
@@ -240,7 +243,7 @@ class MujocoRobotEnv(BaseRobotEnv):
         super().__init__(**kwargs)
 
     def _initialize_simulation(self):
-        print(self.fullpath)
+        # print(self.fullpath)
         self.model = self._mujoco.MjModel.from_xml_path(self.fullpath)
         self.data = self._mujoco.MjData(self.model)
         self._model_names = self._utils.MujocoModelNames(self.model)
@@ -300,10 +303,10 @@ class MujocoRobotEnv(BaseRobotEnv):
     def dt(self):
         return self.model.opt.timestep * self.n_substeps
 
-    # 이 부분이 왜 필요한지를 모르겠다.
+    #
     # 아마 step() 사이를 n_substeps 로 쪼개서 동일한 action 에 대해 n_substeps 만큼 반복하는 것 같다.
     # 그냥 n_substeps 간 시간은 너무 짧아서 obs 의 변화가 거의 없기 때문에 일부로 여러개의 n_substeps 를 합쳐서 1개의 step 으로 사용하는 것 같다. 
-    def _mujoco_step(self, action):
+    def _mujoco_step(self):
         self._mujoco.mj_step(self.model, self.data, nstep=self.n_substeps)
 
 
