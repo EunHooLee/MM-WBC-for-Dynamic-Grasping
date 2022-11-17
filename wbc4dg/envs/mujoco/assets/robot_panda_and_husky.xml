@@ -1,5 +1,12 @@
 <mujoco>
     
+    <!-- <body mocap="true" name="object0:mocap" pos="0 0 0" >
+		<geom conaffinity="0" contype="0" pos="0 0. 0" rgba="0.0 0.5 0.0 0.5" size="0.005 0.005 0.005" type="box" group="1"></geom>
+		<geom conaffinity="0" contype="0" pos="0 0. 0" rgba="1.0 0.0 0.0 0.5" size="0.15 0.005 0.005" type="box" group="1"></geom>
+		<geom conaffinity="0" contype="0" pos="0 0. 0" rgba="0.0 1.0 0.0 0.5" size="0.005 0.15 0.005" type="box" group="1"></geom>
+		<geom conaffinity="0" contype="0" pos="0 0. 0" rgba="0.0 0.0 1.0 0.5" size="0.005 0.005 0.15" type="box" group="1"></geom>
+	</body> -->
+
     <body name="robot0:base_link" pos="0.0 0.0 0.14493">
     <!-- <body name="robot0:base_link" pos="0 0 0.061875" > -->
         <!-- <geom mesh="base_link" name="robot0:base_link" material="robot0:base_mat" class="robot0:grey"></geom> -->

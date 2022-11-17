@@ -17,8 +17,8 @@
 		<!-- Robot -->
 		<include file="robot_panda_and_husky.xml"></include>
 
-		<body pos="1.2 0.1 0.8" name="object0">
-			<joint name="object0:joint" type="free" limited="false"></joint>
+		<body name="object0" pos="1.0 1.0 1.0" mocap="true">
+			<!-- <joint name="object0:joint" type="free" limited="false"></joint> -->
 			<!-- <joint armature="0.0001" axis="1 0 0" damping="1e+11" name="robot0:object1" pos="0 0 0" type="slide" limited="false"></joint>
 			<joint armature="0.0001" axis="0 1 0" damping="1e+11" name="robot0:object2" pos="0 0 0" type="slide" limited="false"></joint>
 			<joint armature="0.0001" axis="0 0 1" damping="1e+11" name="robot0:object3" pos="0 0 0" type="slide" limited="false"></joint> -->

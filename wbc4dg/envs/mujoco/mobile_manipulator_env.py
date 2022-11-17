@@ -263,7 +263,7 @@ class MujocoPyMMEnv(get_base_fetch_env(MujocoPyRobotEnv)):
 
     def _reset_sim(self):
         self.sim.set_state(self.initial_state)
-
+        
         # Randomize start position of object.
         if self.has_object:
             object_xpos = self.initial_gripper_xpos[:2]
@@ -336,12 +336,20 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
             )
             self._mujoco.mj_forward(self.model, self.data)
 
+    # def object_trajectory(self):
+    #     object_control = np.array([1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0])
+    #     return object_control
+
     def _set_action(self, action):
         action = super()._set_action(action)
         # Apply action to simulation.
         self._utils.ctrl_set_action(self.model, self.data, action)
         
-        # self._utils.mocap_set_action(self.model, self.data, action)    # We don't use mocap.
+        if self.has_object:
+            object_action = np.array([0.0, 0.0, 0.01, 1.0, 1.0, 1.0, 0.1])
+
+            self._utils.mocap_set_action(self.model, self.data, object_action)    # We don't use mocap.
+            # print("object0 xpos: ",self._utils.get_site_xpos(self.model, self.data, "object0"))
 
     def generate_mujoco_observations(self):
         # positions
@@ -432,18 +440,22 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         # 이 부분도 수정 필요한 듯
         if self.has_object:
             object_xpos = self.initial_gripper_xpos[:2]
+            
             while np.linalg.norm(object_xpos - self.initial_gripper_xpos[:2]) < 0.1:
                 object_xpos = self.initial_gripper_xpos[:2] + self.np_random.uniform(
                     -self.obj_range, self.obj_range, size=2
                 )
-            object_qpos = self._utils.get_joint_qpos(
-                self.model, self.data, "object0:joint"
-            )
-            assert object_qpos.shape == (7,)
-            object_qpos[:2] = object_xpos
-            self._utils.set_joint_qpos(
-                self.model, self.data, "object0:joint", object_qpos
-            )
+
+            
+            # object_xpos = np.append(object_xpos,1.5+self.np_random.random())
+            # print("_reset_sim: ", object_xpos)
+            object_xpos = np.array([-1.0, -1.0, 1.0])
+            object_quat = np.array([1.0, 0.0, 0.0, 0.0])
+
+            # self._utils.set_mocap_pos(self.model, self.data, "object0:mocap",object_xpos)
+            # self._utils.set_mocap_quat(self.model, self.data, "object0:mocap",object_quat)
+            # self._utils.set_mocap_pos(self.model, self.data, "object0",object_xpos)
+            # self._utils.set_mocap_quat(self.model, self.data, "object0",object_quat)
 
         self._mujoco.mj_forward(self.model, self.data)
         return True
@@ -453,37 +465,33 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
 
     def _env_setup(self, initial_qpos):
         for name, value in initial_qpos.items():
+        
             self._utils.set_joint_qpos(self.model, self.data, name, value)
 
-            # print(name)
-        
+        self._utils.reset_mocap_welds(self.model, self.data)
+        print("object0 xpos: ",self._utils.get_site_xpos(self.model, self.data, "object0"))
         # self._utils.reset_mocap_welds(self.model, self.data)
+        
+        # names = {"robot0:base_link":0,
+        # "link0":0,
+        # "link1":0,
+        # "object0":0,}
+
+        # for name, value in names.items():
+        #     self._utils.set_mocap_pos(self.model, self.data, name, value)
         
         
         self._mujoco.mj_forward(self.model, self.data)
 
-        # Move end effector into position.
-        # 이 부분은 처음 gripper 의 초기 위치인데 없어도 될 듯
-        # gripper_target = np.array(
-        #     [-0.498, 0.005, -0.431 + self.gripper_extra_height]
-        # ) + self._utils.get_site_xpos(self.model, self.data, "robot0:grip") # 현재 gripper 위치 + gripper_extra_height + 이상한 값
+      
+        object_init_pos = np.array([1.0, 0.0, 0.0])
+        object_init_quat = np.array([0.0, 0.0, 0.0, 0.0])
+        self._utils.set_mocap_pos(self.model, self.data, "object0:mocap", object_init_pos)
+        self._utils.set_mocap_quat(self.model, self.data, "object0:mocap", object_init_quat)
+        print("object0 xpos: ",self._utils.get_site_xpos(self.model, self.data, "object0"))
+        #print("!!!!!!!!!!!!!",self.data.mocap_pos)
 
-        # gripper_rotation = np.array([1.0, 0.0, 1.0, 0.0])
 
-        # base_target = np.array([0.0, 0.0, 0.0])
-        # base_rotation = np.array([1.0, 0.0, 0.0, 0.0])
-
-        
-        # self._utils.set_mocap_pos(self.model, self.data, "robot0_base:mocap", base_target)
-        # self._utils.set_mocap_quat(
-        #     self.model, self.data, "robot0_base:mocap", base_rotation
-        # )
-    
-
-        # self._utils.set_mocap_pos(self.model, self.data, "robot0_gripper:mocap", gripper_target)
-        # self._utils.set_mocap_quat(
-        #     self.model, self.data, "robot0_gripper:mocap", gripper_rotation
-        # )
 
         for _ in range(10):
             self._mujoco.mj_step(self.model, self.data, nstep=self.n_substeps)
@@ -498,3 +506,4 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
             self.height_offset = self._utils.get_site_xpos(
                 self.model, self.data, "object0"
             )[2]
+        print(">> : ",self._utils.get_site_xpos(self.model, self.data, "object0") )

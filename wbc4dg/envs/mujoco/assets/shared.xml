@@ -152,6 +152,7 @@
     <equality>
         <!-- <weld body1 = "robot0_base:mocap" body2="link0" solimp="0.9 0.95 0.001" solref="0.02 1"></weld> -->
         <!-- <weld body1 = "robot0_gripper:mocap" body2="panda_hand" solimp="0.9 0.95 0.001" solref="0.02 1"></weld> -->
+        <!-- <weld body1="object0:mocap" body2="object0" solimp="0.9 0.95 0.001" solref="0.02 1"></weld> -->
     </equality>
 
     <contact>

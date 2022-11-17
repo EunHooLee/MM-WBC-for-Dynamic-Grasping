@@ -127,7 +127,7 @@ class BaseRobotEnv(GoalEnv):
             self.render()
         
         obs = self._get_obs()
-
+        
         info = {
             "is_success": self._is_success(obs["achieved_goal"], self.goal),
         }
@@ -152,6 +152,7 @@ class BaseRobotEnv(GoalEnv):
         # configuration.
         super().reset(seed=seed)
         did_reset_sim = False
+        print("RESET")
         while not did_reset_sim:
             did_reset_sim = self._reset_sim()
             # 새로 시작할때마다 goal sampling

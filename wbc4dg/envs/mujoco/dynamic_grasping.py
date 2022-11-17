@@ -132,7 +132,7 @@ class MujocoMMDynamicGraspingEnv(MujocoMMEnv, EzPickle):
     def __init__(self, reward_type="dense", **kwargs):
         initial_qpos = {
             "robot0:base_joint1": 1.0,
-            "robot0:base_joint2": 1.0,
+            "robot0:base_joint2": -1.0,
             "robot0:joint1": 0.3,
             "robot0:joint2": 1.0,
             "robot0:joint3": -1.0,
@@ -145,7 +145,7 @@ class MujocoMMDynamicGraspingEnv(MujocoMMEnv, EzPickle):
             # "robot0:object1":1.0,
             # "robot0:object2":0.0,
             # "robot0:object3":1.0,
-            "object0:joint": [10.0, 0.0, 10.0, 1.0, 0.0, 0.0, 0.0],
+            # "object0:joint": [1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0],
 
         }  # object : 3 DoF position, Quaternion (one scalar, three imaginary)
         MujocoMMEnv.__init__(
