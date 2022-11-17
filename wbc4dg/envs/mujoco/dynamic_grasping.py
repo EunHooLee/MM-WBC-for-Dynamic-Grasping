@@ -141,8 +141,8 @@ class MujocoMMDynamicGraspingEnv(MujocoMMEnv, EzPickle):
             "robot0:joint5": 1.0,
             "robot0:joint6": -1.0,
             "robot0:joint7": 1.0,
-            "robot0:l_gripper_finger_joint": 0.0,
-            "robot0:r_gripper_finger_joint": 0.0,
+            "robot0:l_gripper_finger_joint": 0.01,
+            "robot0:r_gripper_finger_joint": 0.01,
         }  
         MujocoMMEnv.__init__(
             self,
