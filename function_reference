@@ -1,0 +1,20 @@
+MujocoFetchReachEnv(MujocoFetchEnv) : MujocoFetchReachEnv 가 Reach에서 최 하위 클래스이다.
+
+MujocoFetchEnv(get_base_fetch_env(MujocoPyRobotEnv)) : MujocoPyRobotEnv 를 상속받은 BaseFetchEnv를 MujocoFetchEnv가 상속받는다. 여기서 BaseFetchEnv는 모든 Fetch env 에 대해 superclass 이다. 
+
+* 하위 클래스는 상위 클래스를 상속 받아서 상위 클래스에 이미 존재하는 method를 overriding 하여 사용가능하다.
+* 즉, 겹치는 함수가 있을 경우 상위클래스의 method는 무시되기 때문에 하위 클래스의 식을 변경하여야 한다.
+
+결국, 우리가 필요한 함수(변경해야 하는 함수), 겹치는 함수 목록이 필요하다.
+
+
+header file 작성이 필요하다. 
+------------------------------------------------------------------------------------
+FetchReach-v3 에 대한 header file: (mujoco 만 고려, mujocopy 미고려) -> reach_header.py 확인
+------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------------------
+GoalEnv, Env 는 def __init__(self): 가 없다. robot_env.py 내 BaseRobotEnv 클래스 에서 부터 __init__() 이 존재한다. 
+즉, self.observation_space, self.action_space 의 최초 정의가 BaseRobotEnv의 __init__()에 있다. 
+
+  

@@ -7,25 +7,28 @@ import numpy as np
 import random
 
 
-MODEL_PATH = "../src/env/mujoco/assets/dynamic_grasping.xml"
+MODEL_PATH = "../wbc4dg/envs/mujoco/assets/dynamic_grasping.xml"
 # MODEL_PATH = "../../.mujoco/mujoco-py/xmls/tosser.xml"
 
 model = mujoco_py.load_model_from_path(MODEL_PATH)
 sim = mujoco_py.MjSim(model)
 
-viewr = mujoco_py.MjViewer(sim=sim)
+grip_pos = sim.data.get_site_xpos("ee")
+print(grip_pos)
 
-state = sim.get_state()
-print("state 1: ", state)
-qpos = np.array(list(map(lambda x: x*random.random(),np.ones(shape=(25,)))))
+# viewr = mujoco_py.MjViewer(sim=sim)
 
-qvel = np.array(list(map(lambda x: x*random.random(),np.ones(shape=(25,)))))
+# state = sim.get_state()
+# print("state 1: ", state)
+# qpos = np.array(list(map(lambda x: x*random.random(),np.ones(shape=(25,)))))
 
-state = mujoco_py.MjSimState(state.time, qpos, qvel, state.act, state.udd_state)
+# qvel = np.array(list(map(lambda x: x*random.random(),np.ones(shape=(25,)))))
 
-print("modified state : ", state)
+# state = mujoco_py.MjSimState(state.time, qpos, qvel, state.act, state.udd_state)
 
-print(sim.mocap_pos)
+# print("modified state : ", state)
+
+# print(sim.mocap_pos)
 
 
 # sim_state = sim.get_state()
@@ -37,9 +40,9 @@ print(sim.mocap_pos)
 #         if i < 150:
 #             sim.data.ctrl[:] = 0.0
 #         else:
-#             sim.data.ctrl[:] = -1.0
+#             sim.data.ctrl[:] = -100.0
 #         sim.step()
-#         print(sim.get_state())
-#         viewr.render()
+#         print(sim.data.ctrl[:],"     ", i)
+#         # viewr.render()
 #     if os.getenv('TESTING') is not None:
 #         break

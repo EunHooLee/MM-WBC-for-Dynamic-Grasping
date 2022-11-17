@@ -4,8 +4,9 @@ Code release for the xx 2023 paper:
 * Ubuntu==20.04.5 LTS
 * conda==22.9.0
 * python==3.7.13
-* gym==0.21.0
-* mujoco==2.3.0
+* gymnasium==0.26.3 (gymnasium-robotics install시 같이 자동 다운됨)
+* stable-baselines3==1.6.2
+* mujoco==2.2.2 (gymnasium-robotics install시 같이 자동 다운됨)
 * mujoco_py=2.1.2.14
 * torch==1.12.0
 * torchvision==0.13.0
@@ -55,6 +56,8 @@ Execute sequence (Exited from last number)
 결국, 각 joint 마다 motor를 달아야 한다. (토나오네)
 - 기존 panda는 MujocopyEnv를 사용하는데 공식 gym 은 MujocoEnv를 사용한다. 이는 import를 mujoco or mujoco_py 중 뭘쓰냐의 차이 인데 나는 당연히 MujocopyEnv써야되는것 같은데 gym 은 따른걸 썼으니까 gym 처럼 MujocoEnv를 써야 할까? 근데 중요한건 분명 현재 import mujoco 는 되는데 내부 메서드를 쓸수가 없다. 뭔가 패키지가 잘못된 것 같다. 뭐 그렇게 둘 간의 큰 차이는 없어보이니까 MujocopyEnv써보는 걸로 먼저 해봐야 겠다.
 - 내 생각에는 위 실행 순서가 (2 > 3 > 1 > 4 > 5 > 6 or 3 > 2 > 1 > 4 > 5 > 6) 이 되야 될 것 같은데 왜저런지 모르겠다.
+
+
 
 ## Installation
 
