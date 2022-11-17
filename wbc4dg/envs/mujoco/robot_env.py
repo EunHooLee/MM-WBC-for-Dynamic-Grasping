@@ -152,7 +152,6 @@ class BaseRobotEnv(GoalEnv):
         # configuration.
         super().reset(seed=seed)
         did_reset_sim = False
-        print("RESET")
         while not did_reset_sim:
             did_reset_sim = self._reset_sim()
             # 새로 시작할때마다 goal sampling
@@ -244,7 +243,6 @@ class MujocoRobotEnv(BaseRobotEnv):
         super().__init__(**kwargs)
 
     def _initialize_simulation(self):
-        # print(self.fullpath)
         self.model = self._mujoco.MjModel.from_xml_path(self.fullpath)
         self.data = self._mujoco.MjData(self.model)
         self._model_names = self._utils.MujocoModelNames(self.model)
@@ -256,7 +254,6 @@ class MujocoRobotEnv(BaseRobotEnv):
         self.initial_time = self.data.time
         self.initial_qpos = np.copy(self.data.qpos)
         self.initial_qvel = np.copy(self.data.qvel)
-        # print("initial time: ",self.initial_time,"\n","inintial qpos: ", self.initial_qpos, "\n", "initial qvel: ",self.initial_qvel)
 
     def _reset_sim(self):
         self.data.time = self.initial_time
@@ -304,47 +301,14 @@ class MujocoRobotEnv(BaseRobotEnv):
     def dt(self):
         return self.model.opt.timestep * self.n_substeps
 
-    #
-    # 아마 step() 사이를 n_substeps 로 쪼개서 동일한 action 에 대해 n_substeps 만큼 반복하는 것 같다.
-    # 그냥 n_substeps 간 시간은 너무 짧아서 obs 의 변화가 거의 없기 때문에 일부로 여러개의 n_substeps 를 합쳐서 1개의 step 으로 사용하는 것 같다. 
+    """
+    position deviation 으로 제어하는데 0.1씩 변화를 주게되면 너무 큰 변화가 발생해 물체가 순간이동을 하게된다.
+    이를 방지하기 위해 한 step을 n_substeps로 쪼개서 움직인다.
+    즉, 0.1을 20번에 거쳐서 움직이기 때문에 부드러운 움직임이 가능하다.
+    단 이렇게 될 경우 step당 여러번 반복이 필요하기 때문에 학습 속도가 늦어질 것 같다.
+    """
     def _mujoco_step(self):
         self._mujoco.mj_step(self.model, self.data, nstep=self.n_substeps)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 class MujocoPyRobotEnv(BaseRobotEnv):

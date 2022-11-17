@@ -38,24 +38,12 @@ def ctrl_set_action(model, data, action):
     """For torque actuators it copies the action into mujoco ctrl field.
     For position actuators it sets the target relative to the current qpos.
     """
-    # if model.nmocap > 0:
-    #     _, action = np.split(action, (model.nmocap * 7,))# We don't use mocap 
-    # print(len(data.ctrl))     # 11 (except object0:joint - It's free, know.)
-    # print(data.ctrl)
-    
     
     if len(data.ctrl) > 0:
         for i in range(action.shape[0]):
             # motor position control
             idx = model.jnt_qposadr[model.actuator_trnid[i,0]]
             data.ctrl[i] = data.qpos[idx] + action[i]
-            
-
-            # if model.actuator_biastype[i] == 0:
-            #     data.ctrl[i] = action[i]
-            # else:
-            #     idx = model.jnt_qposadr[model.actuator_trnid[i, 0]]
-            #     data.ctrl[i] = data.qpos[idx] + action[i]
 
 
 def mocap_set_action(model, data, action):
@@ -68,26 +56,20 @@ def mocap_set_action(model, data, action):
     constraint optimizer tries to center the welded body on the mocap.
     """
 
-    
     action = action.reshape(model.nmocap, 7)                # 7 : x , y, z , quaternion
-    # print(action.shape)
     pos_delta = action[:, :3]
     quat_delta = action[:, 3:]
-    # print(pos_delta, " " ,quat_delta)
     
     # reset_mocap2body_xpos(model, data)
-    # print(">> ", data.mocap_pos)
-    # print("Delta: ", pos_delta)
-    
+   
     data.mocap_pos[:] = data.mocap_pos + pos_delta
     data.mocap_quat[:] = data.mocap_quat + quat_delta
-    print(data.mocap_pos)
         
 
 def reset_mocap_welds(model, data):
     """Resets the mocap welds that we use for actuation."""
     if model.nmocap > 0 and model.eq_data is not None:
-        print(model.eq_data.shape[0])
+        
         for i in range(model.eq_data.shape[0]):
             if model.eq_type[i] == mujoco.mjtEq.mjEQ_WELD:
                 model.eq_data[i, :7] = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]) # 이게 joint angle or 3D pos + 4 quaternion
@@ -98,7 +80,6 @@ def reset_mocap2body_xpos(model, data):
     """Resets the position and orientation of the mocap bodies to the same
     values as the bodies they're welded to.
     """
-    # print(data.xpos[2])
     
     if model.eq_type is None or model.eq_obj1id is None or model.eq_obj2id is None:
         return
@@ -109,7 +90,6 @@ def reset_mocap2body_xpos(model, data):
             continue
         
         mocap_id = model.body_mocapid[obj1_id]
-        
         if mocap_id != -1:
             # obj1 is the mocap, obj2 is the welded body
             body_idx = obj2_id
@@ -119,7 +99,6 @@ def reset_mocap2body_xpos(model, data):
             body_idx = obj1_id
 
         assert mocap_id != -1
-        # print(data.xpos[2])
         data.mocap_pos[mocap_id][:] = data.xpos[body_idx]
         data.mocap_quat[mocap_id][:] = data.xquat[body_idx]
 
@@ -167,7 +146,7 @@ def set_joint_qpos(model, data, name, value):
     joint_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, name)
     joint_type = model.jnt_type[joint_id]
     joint_addr = model.jnt_qposadr[joint_id]
-    # print(name, " " , joint_id)
+    
     if joint_type == mujoco.mjtJoint.mjJNT_FREE:
         ndim = 7
     elif joint_type == mujoco.mjtJoint.mjJNT_BALL:
@@ -216,7 +195,7 @@ def get_joint_qpos(model, data, name):
     joint_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, name)
     joint_type = model.jnt_type[joint_id]
     joint_addr = model.jnt_qposadr[joint_id]
-    # print(name, ""Mjoint_id)
+
     if joint_type == mujoco.mjtJoint.mjJNT_FREE:
         ndim = 7
     elif joint_type == mujoco.mjtJoint.mjJNT_BALL:
@@ -259,26 +238,25 @@ def get_site_xpos(model, data, name):
 def get_site_xvelp(model, data, name):
     site_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, name)
     jacp = get_site_jacp(model, data, site_id)
-    # print(jacp)
     xvelp = jacp @ data.qvel
     return xvelp
-
+    
 
 def get_site_xvelr(model, data, name):
     site_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, name)
     jacp = get_site_jacr(model, data, site_id)
     xvelp = jacp @ data.qvel
     return xvelp
-
-    # object0:mocap : body_id = 2
-    # object0 :  body_id=24
-    # link0   :  body_id=8
-    # link1   :  body_id=9
-    # robot_base_lint : body_id=3
+    """
+    object0:mocap : body_id = 2
+    object0 :  body_id=24
+    link0   :  body_id=8
+    link1   :  body_id=9
+    robot_base_lint : body_id=3
+    """
 def set_mocap_pos(model, data, name, value):
-    body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, name)      # object0: body_id=2
-    print(name, " ", body_id)
-    mocap_id = model.body_mocapid[body_id]                                  # object0: mocap_id=0 
+    body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, name)      
+    mocap_id = model.body_mocapid[body_id]                                   
     data.mocap_pos[mocap_id] = value
     
 

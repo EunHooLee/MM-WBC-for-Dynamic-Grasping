@@ -17,9 +17,7 @@
         <texture builtin="checker" height="512" name="texplane" rgb1=".2 .3 .4" rgb2=".1 0.15 0.2" type="2d" width="512"/>
         <material name="floorplane" reflectance="0.5" texrepeat="1 1" texture="texplane" texuniform="true"/>
         
-        <!-- <texture builtin="gradient" height="100" rgb1="1 1 1" rgb2="0 0 0" type="skybox" width="100"/> -->
         <texture builtin="flat" height="1278" mark="cross" markrgb="1 1 1" name="texgeom" random="0.01" rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" type="cube" width="127"/>
-        <!-- <texture builtin="checker" height="100" name="texplane" rgb1="0 0 0" rgb2="0.8 0.8 0.8" type="2d" width="100"/> -->
         <texture type="skybox" builtin="gradient" rgb1="0.44 0.85 0.56" rgb2="0.46 0.87 0.58" width="32" height="32"></texture>
         <texture name="texture_block" file="block.png" gridsize="3 4" gridlayout=".U..LFRB.D.."></texture>
 
@@ -63,8 +61,6 @@
         <!-- Panda Manipulator -->
 
         <texture type="skybox" builtin="gradient" rgb1="1 1 1" width="32" height="32"></texture>
-        <!-- <texture name="texture_block" file="block.png" gridsize="3 4" gridlayout=".U..LFRB.D.."></texture> -->
-        <!-- <texture builtin="flat" name="texgeom" height="32" width="32" rgb1="1 1 1" type="cube"></texture> -->
         <texture builtin="flat" name="texgeom_small" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
 		<texture builtin="flat" name="gripper_finger_tex" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
 		<texture builtin="flat" name="gripper_tex" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
@@ -73,23 +69,7 @@
 		<texture builtin="flat" name="head_tex" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
 		<texture builtin="flat" name="torso_tex" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
 		<texture builtin="flat" name="base_tex" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
-        <!-- <texture builtin="flat" name="floor_tex" height="32" width="32" rgb1="1 1 1" type="cube"></texture> -->
-        <!-- <texture builtin="flat" name="table_tex1" height="32" width="32" rgb1="1 1 1" type="cube"></texture> -->
-        <!-- <texture builtin="none" name="table_tex" height="32" width="32" file="table1.png" type="cube"></texture> -->
-        
-        <!-- <texture name="light_wood" file="../texture/light_wood.png" type="cube"/>
-        <material shininess=".1" name="light_wood" texture="light_wood" specular="0.4"/> -->
-
-    
-
-        <!-- <material name="floor_mat" specular="0" shininess="0.0" reflectance="0" rgba="0.2 0.3 0.3 1" texture="floor_tex"></material> -->
-        <!-- <material name="table_mat" specular="0.5" shininess="0.8" reflectance="0" rgba="0.90 0.75 0.51 1" texture="table_tex"></material>
-        <material name="table_mat_white" specular="0.2" shininess="0.2" reflectance="0" rgba="1 1 1 1" texture="arm_tex"></material>
-        <material name="pedestal_mat" specular="0.5" shininess="0.8" reflectance="0" rgba="0.925 0.835 0.655 1" texture="table_tex1"></material>
-        <material name="block_mat" specular="0" shininess="0.5" reflectance="0" rgba="0.2 0.5 0.2 1" texture="texgeom"></material>
-        <material name="puck_mat" specular="0" shininess="0.5" reflectance="0" rgba="0.2 0.2 0.2 1" texture="texgeom"></material> -->
-
-        <!-- <material name="robot0:geomMat" shininess="0.03" specular="0.4" texture="texgeom"></material> -->
+ 
         <material name="robot0:gripper_finger_mat" shininess="0.03" specular="0.4" reflectance="0" texture="gripper_finger_tex"></material>
         <material name="robot0:gripper_mat" shininess="0.03" specular="0.4" reflectance="0" texture="gripper_tex"></material>
         <material name="background:gripper_mat" shininess="0.03" specular="0.4" reflectance="0" texture="background_tex"></material>
@@ -97,9 +77,6 @@
         <material name="robot0:head_mat" shininess="0.03" specular="0.4" reflectance="0" texture="head_tex"></material>
         <material name="robot0:torso_mat" shininess="0.03" specular="0.4" reflectance="0" texture="torso_tex"></material>
         <material name="robot0:base_mat" shininess="0.03" specular="0.4" reflectance="0" texture="base_tex"></material>
-
-
-
 
         <mesh name="link_base" file="link_base.STL" />
         <mesh name="link0_collision" file="collision/link0.stl"/>
@@ -123,6 +100,7 @@
         <mesh name="hand_visual" file="visual/hand.stl"/>
         <mesh name="finger_visual" file="collision/finger.stl" scale='1.75 1.0 1.75'/>
     </asset>
+
     <default>
         <default class="panda">
             
@@ -142,7 +120,6 @@
     </default>
 
 
-
     <asset>
         <mesh file="can.stl" name="can_mesh" scale="2.0 2.0 2.0" />
         <texture file="can.png" name="tex-can"/>
@@ -150,41 +127,9 @@
     </asset>
 
     <equality>
-        <!-- <weld body1 = "robot0_base:mocap" body2="link0" solimp="0.9 0.95 0.001" solref="0.02 1"></weld> -->
-        <!-- <weld body1 = "robot0_gripper:mocap" body2="panda_hand" solimp="0.9 0.95 0.001" solref="0.02 1"></weld> -->
-        <!-- <weld body1="object0:mocap" body2="object0" solimp="0.9 0.95 0.001" solref="0.02 1"></weld> -->
     </equality>
 
     <contact>
-        <!-- <exclude body1="robot0:r_gripper_finger_link" body2="robot0:l_gripper_finger_link"></exclude>
-        <exclude body1="robot0:torso_lift_link" body2="robot0:torso_fixed_link"></exclude>
-        <exclude body1="robot0:torso_lift_link" body2="robot0:shoulder_pan_link"></exclude>
-        <exclude body1="robot0:base_link" body2="r_ur5_arm_shoulder_link" ></exclude>
-        <exclude body1="r_ur5_arm_shoulder_link" body2="r_ur5_arm_upper_arm_link" ></exclude> -->
-        <!-- <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>ㄴ
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude>
-        <exclude body1="" body2="" ></exclude> -->
-
     </contact>
 
     <visual>
