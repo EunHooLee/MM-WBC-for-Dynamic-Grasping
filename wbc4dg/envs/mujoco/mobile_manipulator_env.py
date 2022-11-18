@@ -5,6 +5,12 @@ import numpy as np
 from wbc4dg.envs.mujoco.robot_env import MujocoRobotEnv
 from gymnasium_robotics.utils import rotations
 
+# the goal distance
+# def compute_reward(self, achieved_goal, goal, info):
+# def _set_action(self, action):
+# def _get_obs(self):
+# def _sample_goal(self):
+# def _is_success(self, achieved_goal, desired_goal):
 
 def goal_distance(goal_a, goal_b):
     assert goal_a.shape == goal_b.shape
@@ -85,18 +91,20 @@ def get_base_fetch_env(RobotEnvClass: MujocoRobotEnv):
             
             base_ctrl, ee_ctrl, gripper_ctrl = action[:2] ,action[2:9], action[9:]
             # self.a +=0.001  # acc = 0.001
-            self.a = 0.05     # vel 
-            self.b = 0.05     # vel 
+            # self.a = 0.05     # vel 
+            # self.b = 0.05     # vel 
             
-            if self.k < 1000:
-                base_ctrl =[ self.a, 0.0]
-                self.k +=1
-            else:
-                base_ctrl = [self.a, self.b]
+            # base_ctrl = base_ctrl+
+
+            # if self.k < 1000:
+            #     base_ctrl =[ self.a, 0.0]
+            #     self.k +=1
+            # else:
+            #     base_ctrl = [self.a, self.b]
 
 
 
-            ee_ctrl = [0.0, 0.0 , 0.0, 0.0, 0.0, 0.0,0.0]
+            ee_ctrl = [0.00, 0.26 , 0.11, -1.62, 0.06, 1.42, 0.84]
             # gripper 대칭 제어
             gripper_ctrl = np.array([gripper_ctrl[0], gripper_ctrl[0]]) # gripper_ctrl[0] 원래 [0] 안해도 됬는데 왜그러지? 11/16
             assert gripper_ctrl.shape == (2,)
@@ -210,7 +218,6 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         action = super()._set_action(action)
         # Apply action to simulation.
         self._utils.ctrl_set_action(self.model, self.data, action)
-        
         # self._utils.mocap_set_action(self.model, self.data, action)    # We don't use mocap.
 
     def generate_mujoco_observations(self):
@@ -300,6 +307,7 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
 
         # Randomize start position of object.
         # 이 부분도 수정 필요한 듯
+        # 
         if self.has_object:
             object_xpos = self.initial_gripper_xpos[:2]
             while np.linalg.norm(object_xpos - self.initial_gripper_xpos[:2]) < 0.1:
