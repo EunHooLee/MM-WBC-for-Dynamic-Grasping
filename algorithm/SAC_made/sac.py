@@ -51,7 +51,7 @@ class SAC(object):
 
     def update_parameters(self, memory, batch_size, updates):
         # Sample a batch from memory
-        state_batch, action_batch, reward_batch, next_state_batch, truncated_mask_batch, terminated_mask_batch= memory.sample(batch_size=batch_size)
+        state_batch, action_batch, reward_batch, next_state_batch, truncated_mask_batch, terminated_mask_batch, done_mask_batch= memory.sample(batch_size=batch_size)
 
         state_batch = torch.FloatTensor(state_batch).to(self.device)
         next_state_batch = torch.FloatTensor(next_state_batch).to(self.device)
@@ -59,7 +59,7 @@ class SAC(object):
         reward_batch = torch.FloatTensor(reward_batch).to(self.device).unsqueeze(1)
         truncated_mask_batch = torch.FloatTensor(truncated_mask_batch).to(self.device).unsqueeze(1)
         terminated_mask_batch = torch.FloatTensor(terminated_mask_batch).to(self.device).unsqueeze(1)
-        # mask_batch = torch.FloatTensor(mask_batch).to(self.device).unsqueeze(1)
+        done_mask_batch = torch.FloatTensor(done_mask_batch).to(self.device).unsqueeze(1)
 
         with torch.no_grad():
             next_state_action, next_state_log_pi, _ = self.policy.sample(next_state_batch)

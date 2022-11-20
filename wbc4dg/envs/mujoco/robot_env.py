@@ -154,7 +154,7 @@ class BaseRobotEnv(GoalEnv):
         if self.render_mode == "human":
             self.render()
 
-        return obs, {}
+        return obs#, {}
 
     def close(self):
         if self.viewer is not None:

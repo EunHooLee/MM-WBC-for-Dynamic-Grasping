@@ -60,8 +60,6 @@ env.reset()
 # print(env.action_space.shape[0])
 torch.manual_seed(123456)
 np.random.seed(123456)
-print(env.action_space)
-print(env.observation_space)
 # Agent
 agent = SAC(env.observation_space["observation"].shape[0], env.action_space, args)
 
@@ -87,7 +85,7 @@ for i_episode in itertools.count(1):
             action = env.action_space.sample()  # Sample random action
         else:
             action = agent.select_action(state)  # Sample action from policy
-
+        # memory i bigger thatn the batch
         if len(memory) > 256:
             # Number of updates per step in environment
             for i in range(1):
@@ -108,11 +106,12 @@ for i_episode in itertools.count(1):
 
         # Ignore the "done" signal if it comes from hitting the time horizon.
         # (https://github.com/openai/spinningup/blob/master/spinup/algos/sac/sac.py)
-        terminated_mask = 1 if episode_steps == 10000000 else float(not terminated )
-        truncated_mask = 1 if episode_steps == 10000000 else float(not truncated)
-        done_mask = 1 if done else float(not done)
-        memory.push(state, action, reward, next_state, terminated_mask, truncated_mask, done_mask) # Append transition to memory
+        terminated_mask = 1 if episode_steps == 1000000 else float(not terminated )
+        truncated_mask = 1 if episode_steps == 1000000 else float(not truncated)
+        done_mask = 1 if episode_steps == 1000000 else float(not truncated)
 
+        memory.push(state["observation"], action, reward, next_state["observation"], terminated_mask, truncated_mask, done_mask) # Append transition to memory
+        
         state = next_state
 
     if total_numsteps > 1000001:
