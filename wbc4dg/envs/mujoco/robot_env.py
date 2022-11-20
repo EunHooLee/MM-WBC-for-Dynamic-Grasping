@@ -55,7 +55,6 @@ class BaseRobotEnv(GoalEnv):
         
         
         self.n_substeps = n_substeps
-        
         self.initial_qpos = initial_qpos
 
         self.width = width 
@@ -72,11 +71,13 @@ class BaseRobotEnv(GoalEnv):
             int(np.round(1.0 / self.dt)) == self.metadata["render_fps"]
         ), f'Expected value: {int(np.round(1.0 / self.dt))}, Actual value: {self.metadata["render_fps"]}'
 
-        self.action_space = spaces.Box(-1.0, 1.0, shape=(n_actions,), dtype="float32")
+        self.action_space = spaces.Box(-1.0, 1.0, shape=(n_actions,), dtype="float64")
+
+        # 11.18 KJW - changed the struct of the dict to just DICT(BOX,BOX,BOX)
         self.observation_space = spaces.Dict(
             # dict(
                 desired_goal=spaces.Box(
-                    -np.inf, np.inf, shape=obs["desired_goal"].shape, dtype="float64"
+                    -np.inf, np.inf, shape=obs["achieved_goal"].shape, dtype="float64"
                 ),
                 achieved_goal=spaces.Box(
                     -np.inf, np.inf, shape=obs["achieved_goal"].shape, dtype="float64"
@@ -86,6 +87,8 @@ class BaseRobotEnv(GoalEnv):
                 ),
             # )
         )
+
+        # self.observation_space= observation=spaces.Box(-np.inf, np.inf, shape=obs["observation"].shape, dtype="float64")
 
         self.render_mode = render_mode
         

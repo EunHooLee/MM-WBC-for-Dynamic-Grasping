@@ -15,10 +15,10 @@ env = MujocoMMDynamicGraspingEnv(reward_type="sparse",)
 _model_name = mujoco_utils.MujocoModelNames(env.model)
 obs,_ = env.reset()
 print(obs)
-print(*obs)
+print(obs)
 
 
-for _ in range(1):
+for _ in range(1000):
 
     action = env.action_space.sample()
     # print(action)

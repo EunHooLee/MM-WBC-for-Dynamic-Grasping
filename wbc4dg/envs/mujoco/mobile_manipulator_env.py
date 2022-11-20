@@ -64,9 +64,9 @@ def get_base_fetch_env(RobotEnvClass: MujocoRobotEnv):
             self.target_range = target_range
             self.distance_threshold = distance_threshold
             self.reward_type = reward_type
-            self.a = 0 
-            self.b = 0
-            self.k = 0
+            # self.a = 0 
+            # self.b = 0
+            # self.k = 0
             super().__init__(n_actions=10, **kwargs)         # n_action : 2 DoF (base) + 7 DoF (arm) + 1DoF (gripper)
 
         # GoalEnv methods
@@ -85,10 +85,11 @@ def get_base_fetch_env(RobotEnvClass: MujocoRobotEnv):
 
         def _set_action(self, action):
             assert action.shape == (10,) # action shape가 4가 아니면 에러 발생 (action은 3DoF EE pose, 나머지 1개는 gripper)
+
             action = (
                 action.copy()
             )  # ensure that we don't change the action outside of this scope
-            
+            '''get the reward thought how are we gonna get the '''
             base_ctrl, ee_ctrl, gripper_ctrl = action[:2] ,action[2:9], action[9:]
             # self.a +=0.001  # acc = 0.001
             # self.a = 0.05     # vel 
@@ -101,7 +102,7 @@ def get_base_fetch_env(RobotEnvClass: MujocoRobotEnv):
             #     self.k +=1
             # else:
             #     base_ctrl = [self.a, self.b]
-
+            
 
 
             ee_ctrl = [0.00, 0.26 , 0.11, -1.62, 0.06, 1.42, 0.84]
@@ -113,7 +114,7 @@ def get_base_fetch_env(RobotEnvClass: MujocoRobotEnv):
 
             action = np.concatenate([base_ctrl, ee_ctrl, gripper_ctrl])
             return action
-
+        '''get the obesrvations and set tot he'''
         def _get_obs(self):
             (
                 base_pos,
