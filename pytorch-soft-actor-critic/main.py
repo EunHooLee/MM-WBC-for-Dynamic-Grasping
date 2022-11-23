@@ -71,7 +71,7 @@ max_reward = 0.0
 total_numsteps = 0
 print('started ')
 updates = 0
-for i_episode in range(50000):
+for i_episode in range(500000):
     
     
     episode_reward = 0
