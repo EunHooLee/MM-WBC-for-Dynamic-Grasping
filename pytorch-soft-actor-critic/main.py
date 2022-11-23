@@ -7,6 +7,7 @@ import torch
 from sac import SAC
 # from torch.utils.tensorboard import SummaryWriter
 from replay_memory import ReplayMemory
+import math
 
 parser = argparse.ArgumentParser(description='PyTorch Soft Actor-Critic Args')
 
@@ -44,12 +45,15 @@ args = parser.parse_args()
 
 # Environment
 # env = NormalizedActions(gym.make(args.env_name))
-env = gym.make("Hopper-v4",render_mode='human')
+# env = gym.make('InvertedPendulum-v4',render_mode='human')
+env = gym.make('Hopper-v4')#,render_mode='human')
+# env = gym.make('CartPole-v1',render_mode='human')
 print("cuda" if torch.cuda.is_available() else "cpu")
+print(env._max_episode_steps)
 # env.seed(123456)
 env.action_space.seed(123456)
-
-
+# env = env.reset()
+# print(env)
 torch.manual_seed(123456)
 np.random.seed(123456)
 
@@ -67,7 +71,7 @@ max_reward = 0.0
 total_numsteps = 0
 print('started ')
 updates = 0
-for i_episode in range(5000):
+for i_episode in range(50000):
     
     
     episode_reward = 0
@@ -76,7 +80,9 @@ for i_episode in range(5000):
     terminated = False
     state,_ = env.reset()   
     
-    while not truncated or not terminated:
+    while not terminated:
+        # if truncated:
+        #     break
         if 1000 > total_numsteps:
             action = env.action_space.sample()  # Sample random action
         else:
@@ -96,7 +102,7 @@ for i_episode in range(5000):
                 # writer.add_scalar('entropy_temprature/alpha', alpha, updates)
                 updates += 1
             
-        next_state, reward, truncated, terminated, _ = env.step(action) # Step
+        next_state, reward, terminated, truncated, _ = env.step(action) # Step
         episode_steps += 1
         total_numsteps += 1
         episode_reward += reward
@@ -104,10 +110,16 @@ for i_episode in range(5000):
         # Ignore the "done" signal if it comes from hitting the time horizon.
         # (https://github.com/openai/spinningup/blob/master/spinup/algos/sac/sac.py)
         truncated = True if episode_steps==1000 else False
+        # print(next_state)
+        # terminated = True if (next_state[1]>0.2 or next_state[1]<-0.2) else False
 
-        memory.push(state, action, reward, next_state, truncated, terminated) # Append transition to memory
-
+        memory.push(state, action, reward, next_state, terminated, truncated) # Append transition to memory
+        # print("checking: ",terminated,",", truncated)
         state = next_state
+
+    # if max_reward < episode_reward:
+    #     agent.save_checkpoint("hopper-v4","checking")
+    #     max_reward=episode_reward
 
     # writer.add_scalar('reward/train', episode_reward, i_episode)
     print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2)))
@@ -117,30 +129,30 @@ for i_episode in range(5000):
 
 
 # # agent.load_checkpoint('/home/yeoma/code/pytorch-soft-actor-critic/checkpoints/sac_checkpoint_Hopper-v4_',True)
-#     if i_episode%10==0: 
-#         avg_reward = 0.
-#         episodes = 10
-#         episode_reward =0
-#         terminated=False
-#         truncated = False
-#         state, _ =env.reset()
-#         while not terminated or not truncated:
-#             action = agent.select_action(state, evaluate=True)
-#             next_state, reward, truncated, terminated, _ = env.step(action)
-#             # env.render()
-#             episode_reward += reward
-#             state = next_state
+    if i_episode%100==0: 
+        avg_reward = 0.
+        episodes = 10
+        episode_reward =0
+        terminated=False
+        truncated = False
+        state, _ =env.reset()
+        while not terminated or not truncated:
+            action = agent.select_action(state, evaluate=True)
+            next_state, reward, truncated, terminated, _ = env.step(action)
+            # env.render()
+            episode_reward += reward
+            state = next_state
             
-#         avg_reward += episode_reward
+        avg_reward += episode_reward
 
 
-#         # writer.add_scalar('avg_reward/test', avg_reward, i_episode)
-#         print("----------------------------------------")
-#         print("Test Episodes: {}, Avg. Reward: {}".format(episodes, round(avg_reward, 2)))
-#         print("----------------------------------------")
-#         if avg_reward >max_reward:
-#             max_reward = avg_reward
-#             agent.save_checkpoint(env_name="Hopper-v4")
+        # writer.add_scalar('avg_reward/test', avg_reward, i_episode)
+        print("----------------------------------------")
+        print("Test Episodes: {}, Avg. Reward: {}".format(episodes, round(avg_reward, 2)))
+        print("----------------------------------------")
+        if avg_reward >max_reward:
+            max_reward = avg_reward
+            agent.save_checkpoint(env_name="Hopper-v4")
 
 env.close()
 
