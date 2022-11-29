@@ -36,8 +36,11 @@ print(env.observation_space["observation"])
 np.random.seed(123456)
 
 # # Agent
-agent = SAC(env.observation_space["observation"].shape[0], env.action_space, gamma=0.99, tau=0.005, alpha=0.2, policy="Gaussian", target_update_interval=True, automatic_entropy_tuning=False, hidden_size=256,lr=0.0005)
-agent.load_model('/home/yeoma/code/mm-wbc_v2/models/sac_actor__','/home/yeoma/code/mm-wbc_v2/models/sac_critic__','/home/yeoma/code/mm-wbc_v2/models/sac_value__')
+agent = SAC(env.observation_space["observation"].shape[0], env.action_space, gamma=0.99, tau=0.005, alpha=0.2, policy="Gaussian", target_update_interval=True, automatic_entropy_tuning=False, hidden_size=256,lr=0.0003)
+agent.load_model('/home/yeoma/code/mm-wbc/models/sac_actor__best_reward','/home/yeoma/code/mm-wbc/models/sac_critic__best_reward','/home/yeoma/code/mm-wbc/models/sac_value__best_reward')
+
+# agent.load_model('/home/yeoma/code/mm-wbc_v2/models/sac_actor__middle','/home/yeoma/code/mm-wbc_v2/models/sac_critic__middle','/home/yeoma/code/mm-wbc_v2/models/sac_value__middle')
+
 # Memory
 memory = ReplayMemory(1000000, 123456)
 # agent.load_model('/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_actor_robotics_train','/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_critic_robotics_train','/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_value_robotics_train')

@@ -26,17 +26,18 @@ torch.manual_seed(123456)
 np.random.seed(123456)
 
 # # Agent
-agent = SAC(env.observation_space["observation"].shape[0], env.action_space, gamma=0.99, tau=0.005, alpha=0.2, policy="Gaussian", target_update_interval=True, automatic_entropy_tuning=False, hidden_size=512,lr=0.0003)
+agent = SAC(env.observation_space["observation"].shape[0], env.action_space, gamma=0.99, tau=0.005, alpha=0.2, policy="Gaussian", target_update_interval=True, automatic_entropy_tuning=False, hidden_size=256,lr=0.0003)
 # agent.load_model('/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_actor_robotics_middle_check','/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_critic_robotics_middle_check','/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_value_robotics_middle_check`')
 # Memory
 memory = ReplayMemory(1000000, 123456)
 
 # Training Loop
 max_reward = 0.0
-max_reward_train = 0.0
+max_reward_train = -1e9
 total_numsteps = 0
 print('===========started=============')
 updates = 0
+
 for i_episode in range(100000):
     episode_reward = 0
     episode_steps = 0
@@ -86,11 +87,11 @@ for i_episode in range(100000):
         state = next_state
 
     if max_reward_train < episode_reward:
-        agent.save_model("","")
+        agent.save_model("","best_reward")
         max_reward_train=episode_reward
     
-    if i_episode%1000==999:
-            agent.save_model("","middle")
+    if i_episode%3==2:
+        agent.save_model("","middle")
 
     # writer.add_scalar('reward/train', episode_reward, i_episode)
     print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2)))
