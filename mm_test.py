@@ -26,7 +26,7 @@ _model_name = mujoco_utils.MujocoModelNames(env.model)
 obs,_ = env.reset()
 
 print("cuda" if torch.cuda.is_available() else "cpu")
-print(env._max_episode_steps)
+# print(env._max_episode_steps)
 state,_=env.reset()
 print(env.observation_space["observation"])
 # env.action_space.seed(123456)
@@ -37,7 +37,7 @@ np.random.seed(123456)
 
 # # Agent
 agent = SAC(env.observation_space["observation"].shape[0], env.action_space, gamma=0.99, tau=0.005, alpha=0.2, policy="Gaussian", target_update_interval=True, automatic_entropy_tuning=False, hidden_size=256,lr=0.0005)
-# agent.load_model('/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_actor_robotics_train','/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_critic_robotics_train','/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_value_robotics_train')
+agent.load_model('/home/yeoma/code/mm-wbc_v2/models/sac_actor__','/home/yeoma/code/mm-wbc_v2/models/sac_critic__','/home/yeoma/code/mm-wbc_v2/models/sac_value__')
 # Memory
 memory = ReplayMemory(1000000, 123456)
 # agent.load_model('/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_actor_robotics_train','/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_critic_robotics_train','/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_value_robotics_train')

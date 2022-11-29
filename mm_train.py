@@ -69,10 +69,10 @@ for i_episode in range(100000):
         # print("pass",total_numsteps)
         # Ignore the "done" signal if it comes from hitting the time horizon.
         # (https://github.com/openai/spinningup/blob/master/spinup/algos/sac/sac.py)
-        mask  = 1 if episode_steps == 2000 else float(not terminated)
+        mask  = 1 if episode_steps == 200 else float(not terminated)
         # print(mask)
         # print(state)
-        if episode_steps==2000:
+        if episode_steps==200:
             truncated = True
         elif distance(state['observation'][:3],state['observation'][5:8])>4:
             truncated =True
@@ -86,11 +86,11 @@ for i_episode in range(100000):
         state = next_state
 
     if max_reward_train < episode_reward:
-        agent.save_model("robotics","train")
+        agent.save_model("","")
         max_reward_train=episode_reward
     
-    if i_episode%500==499:
-            agent.save_model("robotics","middle_check")
+    if i_episode%1000==999:
+            agent.save_model("","middle")
 
     # writer.add_scalar('reward/train', episode_reward, i_episode)
     print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2)))

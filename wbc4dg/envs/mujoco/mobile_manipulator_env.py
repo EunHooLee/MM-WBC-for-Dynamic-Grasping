@@ -71,13 +71,29 @@ def get_base_fetch_env(RobotEnvClass: MujocoRobotEnv):
         # GoalEnv methods
         # ----------------------------
 
-        def compute_reward(self, achieved_goal, goal, info):
+        def compute_reward(self, obs, goal, info):
             # Compute distance between goal and the achieved goal.
-            d = distance(achieved_goal, goal)
-            if self.reward_type == "sparse":
-                return -(d > self.distance_threshold).astype(np.float32)
-            else:
-                return -d
+            r_dist=distance(obs['observation'][3:6],obs['observation'][6:9])
+            # print(obs['observation'][17:20])
+            # print(np.ndarray([0,0,0]).shape)
+            r_vel = distance(obs['observation'][17:20],np.array([0,0,0]))
+            w_dist=0.5
+            w_vel=0.5
+
+            R_dense = -w_dist*r_dist -w_vel*r_vel + math.exp(-100*pow(r_dist,2))
+
+            if (r_vel<=0.2 and r_dist>0.3):
+                R_dense -=5.0
+            if (r_vel>0.2 and r_dist<=0.3):
+                R_dense -=10.0
+            if (r_vel<=0.2 and r_dist<=0.3):
+                R_dense +=10.0
+            if ((r_vel<=0.2 and r_dist<=0.3) and (math.abs(obs['observation'][12]-obs['observation'][13])<0.045)):
+                R_dense+=200.0
+            return R_dense
+            
+
+
 
 
 # -------------------------our reward--------------------------
@@ -85,7 +101,8 @@ def get_base_fetch_env(RobotEnvClass: MujocoRobotEnv):
         def compute_reward_dense(self, obs_before, obs_after, goal, info):
             # Compute distance between goal and the achieved goal.
             # --------this xy reward----------------------
-            obj_grip_dist= distance(obs_after['achieved_goal'][:2], goal[:2])
+            obj_grip_dist= distance(obs_after['achieved_goal'][:3], goal[:3])
+            # print(type(obs_after['achieved_goal'][:3]))
             if obj_grip_dist <0.0005:
                 distance_reward= 1
             elif obj_grip_dist < 0.00000001:
@@ -128,6 +145,7 @@ def get_base_fetch_env(RobotEnvClass: MujocoRobotEnv):
             base_ctrl, ee_ctrl, gripper_ctrl = action[:2] ,action[2:9], action[9:]
             ee_ctrl *=0.2
             base_ctrl *=0.5
+            ee_ctrl[2]=0.0
             # # ----------------------------------------------------
             # # ########### Action Test Example #############
             # # mobile base 입력된 action 무시하고 직진하다 대각선 이동.
@@ -234,8 +252,9 @@ def get_base_fetch_env(RobotEnvClass: MujocoRobotEnv):
                 )
             return goal.copy()
 
-        def _is_success(self, achieved_goal, desired_goal):
-            d = distance(achieved_goal, desired_goal)
+        # def _is_success(self, obs, desired_goal):
+        #     d = distance(achieved_goal, desired_goal)
+            
             return (d < self.distance_threshold).astype(np.float32)
 
     return BaseMMEnv
@@ -331,9 +350,9 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
             object_rot,
             object_velp,    # gripper 와 상대속도
             object_velr,    # world 좌표계에 대한 속도
-            base_velp,      # world 좌표계에 대한 속도 인 것 같다.
-            grip_velp,
-            gripper_vel,
+            base_velp,      # the velocity of the base
+            grip_velp,       #the speed of the ee
+            gripper_vel,    #gripper speed
         )
 
 
