@@ -82,13 +82,13 @@ def get_base_fetch_env(RobotEnvClass: MujocoRobotEnv):
 
             R_dense = -w_dist*r_dist -w_vel*r_vel + math.exp(-100*pow(r_dist,2))
 
-            if (r_vel<=0.2 and r_dist>1.0):
+            if (r_vel<=0.2 and r_dist>0.5):
                 R_dense -=5.0
-            if (r_vel>0.2 and r_dist<=1.0):
+            elif (r_vel>0.2 and r_dist<=0.5):
                 R_dense -=10.0
-            if (r_vel<=0.2 and r_dist<=1.0):
+            elif (r_vel<=0.2 and r_dist<=0.5):
                 R_dense +=10.0
-            if ((r_vel<=0.2 and r_dist<=1.0) and (abs(obs['observation'][12]-obs['observation'][13])<0.045)):
+            elif ((r_vel<=0.2 and r_dist<=0.5) and (abs(obs['observation'][12]-obs['observation'][13])<0.045)):
                 R_dense+=200.0
 
             return R_dense
