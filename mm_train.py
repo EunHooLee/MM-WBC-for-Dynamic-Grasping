@@ -90,7 +90,7 @@ for i_episode in range(100000):
         agent.save_model("","best_reward")
         max_reward_train=episode_reward
     
-    if i_episode%3==2:
+    if i_episode%1000==999:
         agent.save_model("","middle")
 
     # writer.add_scalar('reward/train', episode_reward, i_episode)
