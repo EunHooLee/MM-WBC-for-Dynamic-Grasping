@@ -2,64 +2,26 @@
     <default>
         <!-- all geom params -->
         <geom contype='1' conaffinity='1' margin="0.001" solimp="0.99 0.99 0.01" solref="0.01 1" condim="4" /> 
-        <!-- friction="1. 0.1 0.1" /> -->
+
         <joint armature="0.01" damping=".1"/>
 
         <!-- Default Joints position control-->
-        <!-- <default class="UR5">
-            <joint damping='200' />
-        </default>
-        <default class="UR5e">
-            <joint damping='100'/>
-        </default> -->
-        <!-- sub=20 -->
-        <!-- <default class="UR5">
-            <joint damping='500' />
-        </default>
-        <default class="UR5e">
-            <joint damping='100'/>
-        </default>         -->
-        <!-- Joint velocity control -->
-        <!-- <default class="UR5">
-            <joint damping='1' />
-        </default>
-        <default class="UR5e">
-            <joint damping='0.5'/>
-        </default> -->
-
-        <!-- <default class="GRIPPER">
-            <joint damping='5'/>
-            <geom rgba="0.424 0.424 0.424 1.0" contype='1' conaffinity='1' margin="0.001" solimp="0.99 0.99 0.01" solref="0.01 1" condim="4" type='mesh'/>
-        </default> -->
-
-        <!-- Default Colours -->
-        <!-- <default class="ur5:blue">
-            <geom rgba="0.635 0.784 0.910 1.0"></geom>
-        </default>
-        <default class="ur5:grey">
-            <geom rgba="0.365 0.365 0.365 1.0"></geom>
-        </default>
-        <default class="ur5:black">
-            <geom rgba="0.106 0.106 0.106 1.0"></geom>
-        </default> -->
         <default class="husky:orange">
             <geom rgba="0.996 0.941 0.412 1.0"></geom>
         </default>
+        
         <default class="husky:black">
             <geom rgba="0.192 0.192 0.192 1.0"></geom>
         </default>
-        <!-- <default class="gripper:black">
-            <geom rgba="0.424 0.424 0.424 1.0"></geom>
-        </default>
-        <default class="gripper:white">
-            <geom rgba="0.898 0.898 0.898 1.0" contype='1' conaffinity='1' margin='0.001' solimp='0.99 0.99 0.01' solref='0.01 1' condim='4' type='mesh'/>
-        </default> -->
+
         <default class="bb2_camera">
             <geom rgba="0.776 0.624 0.294 1.0"></geom>
         </default>
+
         <default class="wheel">
             <geom rgba="0.231 0.231 0.231 1.0"></geom>
         </default>
+
         <default class="sick_lidar">
             <geom rgba="0.761 0.714 0.576 1.0"></geom>
         </default>
@@ -70,26 +32,11 @@
     </default>
 
     <actuator>
-        <!-- husky base position control -->
-        <!-- <position ctrllimited="true" ctrlrange="-10.0 10.0" joint="base_x_slide_joint" kp="18000" name="base_x_slide_joint" user="1"/>
-        <position ctrllimited="true" ctrlrange="-0.57 0.57" kp="20000" joint="base_z_hinge_joint" name="base_z_hinge_joint" user="1"/> -->
-        <!-- husky base velocity control -->
-        <!-- <velocity ctrllimited="true" ctrlrange="-0.01 0.01" joint="base_x_slide_joint"  name="base_x_slide_joint" user="1" ></velocity> -->
-
-    <!-- <motor name="arm_direct_actuator_1" joint="robot0:joint1" class="panda" forcerange="-87 87" ctrlrange="-87 87"/> 
-    <motor name="arm_direct_actuator_2" joint="robot0:joint2" class="panda" forcerange="-87 87" ctrlrange="-87 87"/> 
-    <motor name="arm_direct_actuator_3" joint="robot0:joint3" class="panda" forcerange="-87 87" ctrlrange="-87 87"/> 
-    <motor name="arm_direct_actuator_4" joint="robot0:joint4" class="panda" forcerange="-87 87" ctrlrange="-87 87"/> 
-    <motor name="arm_direct_actuator_5" joint="robot0:joint5" class="panda" forcerange="-12 12" ctrlrange="-12 12"/> 
-    <motor name="arm_direct_actuator_6" joint="robot0:joint6" class="panda" forcerange="-12 12" ctrlrange="-12 12"/> 
-    <motor name="arm_direct_actuator_7" joint="robot0:joint7" class="panda" forcerange="-12 12" ctrlrange="-12 12"/>  -->
-    <!-- <motor name="gripper_direct_actuator_1" joint="panda_finger_joint1" class="panda_finger" forcerange="-70 70" ctrlrange="-70 70"/>
-    <motor name="gripper_direct_actuator_2" joint="panda_finger_joint2" class="panda_finger" forcerange="-70 70" ctrlrange="-70 70"/> -->
+        <!-- husky mobile robot cotroller -->
         <position ctrllimited="true" ctrlrange="-10.0 10.0" joint="robot0:base_joint1" kp="18000" name="robot0:base_joint1" user="1"/>
         <position ctrllimited="true" ctrlrange="-10.0 10.0" joint="robot0:base_joint2" kp="18000" name="robot0:base_joint2" user="1"/>
 
-
-        <!-- Arm: motor position control -->
+        <!--Panda manipulator joint controller -->
         <position name="arm_joint1" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint1" kp="4000"/>
         <position name="arm_joint2" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint2" kp="3000"/>
         <position name="arm_joint3" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint3" kp="3000"/>
@@ -98,6 +45,7 @@
         <position name="arm_joint6" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint6" kp="2000"/>
         <position name="arm_joint7" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint7" kp="2000"/>
         
+        <!-- Panda gripper joint controller-->
         <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:l_gripper_finger_joint" kp="30000" name="robot0:l_gripper_finger_joint" user="1"></position>
         <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:r_gripper_finger_joint" kp="30000" name="robot0:r_gripper_finger_joint" user="1"></position>
     </actuator>

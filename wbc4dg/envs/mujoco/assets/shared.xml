@@ -17,9 +17,7 @@
         <texture builtin="checker" height="512" name="texplane" rgb1=".2 .3 .4" rgb2=".1 0.15 0.2" type="2d" width="512"/>
         <material name="floorplane" reflectance="0.5" texrepeat="1 1" texture="texplane" texuniform="true"/>
         
-        <!-- <texture builtin="gradient" height="100" rgb1="1 1 1" rgb2="0 0 0" type="skybox" width="100"/> -->
         <texture builtin="flat" height="1278" mark="cross" markrgb="1 1 1" name="texgeom" random="0.01" rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" type="cube" width="127"/>
-        <!-- <texture builtin="checker" height="100" name="texplane" rgb1="0 0 0" rgb2="0.8 0.8 0.8" type="2d" width="100"/> -->
         <texture type="skybox" builtin="gradient" rgb1="0.44 0.85 0.56" rgb2="0.46 0.87 0.58" width="32" height="32"></texture>
         <texture name="texture_block" file="block.png" gridsize="3 4" gridlayout=".U..LFRB.D.."></texture>
 
@@ -63,8 +61,6 @@
         <!-- Panda Manipulator -->
 
         <texture type="skybox" builtin="gradient" rgb1="1 1 1" width="32" height="32"></texture>
-        <!-- <texture name="texture_block" file="block.png" gridsize="3 4" gridlayout=".U..LFRB.D.."></texture> -->
-        <!-- <texture builtin="flat" name="texgeom" height="32" width="32" rgb1="1 1 1" type="cube"></texture> -->
         <texture builtin="flat" name="texgeom_small" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
 		<texture builtin="flat" name="gripper_finger_tex" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
 		<texture builtin="flat" name="gripper_tex" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
@@ -73,7 +69,7 @@
 		<texture builtin="flat" name="head_tex" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
 		<texture builtin="flat" name="torso_tex" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
 		<texture builtin="flat" name="base_tex" height="32" width="32" rgb1="1 1 1" type="cube"></texture>
-
+ 
         <material name="robot0:gripper_finger_mat" shininess="0.03" specular="0.4" reflectance="0" texture="gripper_finger_tex"></material>
         <material name="robot0:gripper_mat" shininess="0.03" specular="0.4" reflectance="0" texture="gripper_tex"></material>
         <material name="background:gripper_mat" shininess="0.03" specular="0.4" reflectance="0" texture="background_tex"></material>
@@ -81,9 +77,6 @@
         <material name="robot0:head_mat" shininess="0.03" specular="0.4" reflectance="0" texture="head_tex"></material>
         <material name="robot0:torso_mat" shininess="0.03" specular="0.4" reflectance="0" texture="torso_tex"></material>
         <material name="robot0:base_mat" shininess="0.03" specular="0.4" reflectance="0" texture="base_tex"></material>
-
-
-
 
         <mesh name="link_base" file="link_base.STL" />
         <mesh name="link0_collision" file="collision/link0.stl"/>
@@ -107,6 +100,7 @@
         <mesh name="hand_visual" file="visual/hand.stl"/>
         <mesh name="finger_visual" file="collision/finger.stl" scale='1.75 1.0 1.75'/>
     </asset>
+
     <default>
         <default class="panda">
             
@@ -126,13 +120,17 @@
     </default>
 
 
-
     <asset>
         <mesh file="can.stl" name="can_mesh" scale="2.0 2.0 2.0" />
         <texture file="can.png" name="tex-can"/>
         <material name="coke" reflectance="0.7" texrepeat="5 5" texture="tex-can" texuniform="true"/>
     </asset>
 
+    <equality>
+    </equality>
+
+    <contact>
+    </contact>
 
     <visual>
         <map fogstart="3" fogend="5" force="0.1" znear="0.1"/>

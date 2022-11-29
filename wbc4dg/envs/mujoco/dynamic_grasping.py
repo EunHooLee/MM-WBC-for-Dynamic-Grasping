@@ -4,8 +4,9 @@ from gymnasium.utils.ezpickle import EzPickle
 
 from wbc4dg.envs.mujoco import MujocoMMEnv
 
-# MODEL_XML_PATH = os.path.join("fetch", "pick_and_place.xml")
+
 MODEL_XML_PATH = "dynamic_grasping.xml"
+
 
 class MujocoMMDynamicGraspingEnv(MujocoMMEnv, EzPickle):
     """
@@ -129,10 +130,10 @@ class MujocoMMDynamicGraspingEnv(MujocoMMEnv, EzPickle):
     # mujoco_utils.py 에서 reset_mocap_welds를 바꿔줘야 한다. 
 
     # joint 초기값 (controller X)
-    def __init__(self, reward_type="dense", **kwargs):
+    def __init__(self, reward_type="sparse", **kwargs):
         initial_qpos = {
             "robot0:base_joint1": 1.0,
-            "robot0:base_joint2": 1.0,
+            "robot0:base_joint2": -1.0,
             "robot0:joint1": 0.3,
             "robot0:joint2": 1.0,
             "robot0:joint3": -1.0,
@@ -140,14 +141,9 @@ class MujocoMMDynamicGraspingEnv(MujocoMMEnv, EzPickle):
             "robot0:joint5": 1.0,
             "robot0:joint6": -1.0,
             "robot0:joint7": 1.0,
-            "robot0:l_gripper_finger_joint": 0.0,
-            "robot0:r_gripper_finger_joint": 0.0,
-            # "robot0:object1":1.0,
-            # "robot0:object2":0.0,
-            # "robot0:object3":1.0,
-            "object0:joint": [10.0, 0.0, 10.0, 1.0, 0.0, 0.0, 0.0],
-
-        }  # object : 3 DoF position, Quaternion (one scalar, three imaginary)
+            "robot0:l_gripper_finger_joint": 0.01,
+            "robot0:r_gripper_finger_joint": 0.01,
+        }  
         MujocoMMEnv.__init__(
             self,
             model_path=MODEL_XML_PATH,
@@ -157,13 +153,12 @@ class MujocoMMDynamicGraspingEnv(MujocoMMEnv, EzPickle):
             gripper_extra_height=0.2,
             target_in_the_air=True,
             target_offset=0.0,
-            obj_range=0.15,
+            obj_range=0.5,                 # object initial range (물체가 초기에 생성될 수 있는 위치의 범위)
             target_range=0.15,
-            distance_threshold=0.05,
+            distance_threshold=0.02,       # For _is_success().
             initial_qpos=initial_qpos,
             reward_type=reward_type,
             **kwargs,
         )
         EzPickle.__init__(self, reward_type=reward_type, **kwargs)
-
 

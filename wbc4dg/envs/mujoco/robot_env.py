@@ -7,6 +7,15 @@ import numpy as np
 from gymnasium import error, logger, spaces
 
 from gymnasium_robotics import GoalEnv
+from wbc4dg.envs.mujoco.utils import distance
+# try:
+#     import mujoco_py
+
+#     from gymnasium_robotics.utils import mujoco_py_utils
+# except ImportError as e:
+#     MUJOCO_PY_IMPORT_ERROR = e
+# else:
+#     MUJOCO_PY_IMPORT_ERROR = None
 
 try:
     import mujoco
@@ -20,6 +29,11 @@ else:
 
 DEFAULT_SIZE = 480
 
+
+
+# def distance(goal_a, goal_b):
+#     assert goal_a.shape == goal_b.shape
+#     return np.linalg.norm(goal_a - goal_b, axis=-1)
 
 class BaseRobotEnv(GoalEnv):
     """Superclass for all MuJoCo robotic environments."""
@@ -55,6 +69,7 @@ class BaseRobotEnv(GoalEnv):
         
         
         self.n_substeps = n_substeps
+        
         self.initial_qpos = initial_qpos
 
         self.width = width 
@@ -71,11 +86,9 @@ class BaseRobotEnv(GoalEnv):
             int(np.round(1.0 / self.dt)) == self.metadata["render_fps"]
         ), f'Expected value: {int(np.round(1.0 / self.dt))}, Actual value: {self.metadata["render_fps"]}'
 
-        self.action_space = spaces.Box(-1.0, 1.0, shape=(n_actions,), dtype="float64")
-
-        # 11.18 KJW - changed the struct of the dict to just DICT(BOX,BOX,BOX)
+        self.action_space = spaces.Box(-1.0, 1.0, shape=(n_actions,), dtype="float32")
         self.observation_space = spaces.Dict(
-            # dict(
+            dict(
                 desired_goal=spaces.Box(
                     -np.inf, np.inf, shape=obs["achieved_goal"].shape, dtype="float64"
                 ),
@@ -85,10 +98,8 @@ class BaseRobotEnv(GoalEnv):
                 observation=spaces.Box(
                     -np.inf, np.inf, shape=obs["observation"].shape, dtype="float64"
                 ),
-            # )
+            )
         )
-
-        # self.observation_space= observation=spaces.Box(-np.inf, np.inf, shape=obs["observation"].shape, dtype="float64")
 
         self.render_mode = render_mode
         
@@ -99,14 +110,22 @@ class BaseRobotEnv(GoalEnv):
         """All the available environments are currently continuing tasks and non-time dependent. The objective is to reach the goal for an indefinite period of time."""
         return False
 
-    def compute_truncated(self, achievec_goal, desired_goal, info):
-        """The environments will be truncated only if setting a time limit with max_steps which will automatically wrap the environment in a gymnasium TimeLimit wrapper."""
+    def compute_truncated(self, obs_after, desired_goal, info):
+
+        # print(distance(obs_after['observation'][:3],obs_after['observation'][5:8]))
+        # if distance(obs_after['observation'][:3],obs_after['observation'][5:8])<4:
+        #     return False
+        # return True
         return False
 
     def step(self, action):
         if np.array(action).shape != self.action_space.shape:
             raise ValueError("Action dimension mismatch")
         
+# '''edited to get the reward function of the coontrols and rewards'''
+        obs_before = self._get_obs()
+
+
         action = np.clip(action, self.action_space.low, self.action_space.high)
         
         self._set_action(action)
@@ -120,18 +139,21 @@ class BaseRobotEnv(GoalEnv):
         if self.render_mode == "human":
             self.render()
         
-        obs = self._get_obs()
-
+        obs_after = self._get_obs()
+        
         info = {
-            "is_success": self._is_success(obs["achieved_goal"], self.goal),
+            "is_success": self._is_success(obs_after["achieved_goal"], self.goal),
         }
 
-        terminated = self.compute_terminated(obs["achieved_goal"], self.goal, info)
-        truncated = self.compute_truncated(obs["achieved_goal"], self.goal, info)
+        terminated = self.compute_terminated(obs_after["achieved_goal"], self.goal, info)
+        truncated = self.compute_truncated(obs_after, self.goal, info)
 
-        reward = self.compute_reward(obs["achieved_goal"], self.goal, info)
+        # reward = self.compute_reward(obs_after["achieved_goal"], self.goal, info)
+
+# ----------------our reward---------------------------
+        reward = self.compute_reward_dense(obs_before, obs_after, self.goal, info)
         
-        return obs, reward, terminated, truncated, info
+        return obs_after, reward, terminated, truncated, info
 
     def reset(
         self,
@@ -154,7 +176,7 @@ class BaseRobotEnv(GoalEnv):
         if self.render_mode == "human":
             self.render()
 
-        return obs#, {}
+        return obs, {}
 
     def close(self):
         if self.viewer is not None:
@@ -237,7 +259,6 @@ class MujocoRobotEnv(BaseRobotEnv):
         super().__init__(**kwargs)
 
     def _initialize_simulation(self):
-        # print(self.fullpath)
         self.model = self._mujoco.MjModel.from_xml_path(self.fullpath)
         self.data = self._mujoco.MjData(self.model)
         self._model_names = self._utils.MujocoModelNames(self.model)
@@ -249,7 +270,6 @@ class MujocoRobotEnv(BaseRobotEnv):
         self.initial_time = self.data.time
         self.initial_qpos = np.copy(self.data.qpos)
         self.initial_qvel = np.copy(self.data.qvel)
-        # print("initial time: ",self.initial_time,"\n","inintial qpos: ", self.initial_qpos, "\n", "initial qvel: ",self.initial_qvel)
 
     def _reset_sim(self):
         self.data.time = self.initial_time
@@ -297,9 +317,12 @@ class MujocoRobotEnv(BaseRobotEnv):
     def dt(self):
         return self.model.opt.timestep * self.n_substeps
 
-    #
-    # 아마 step() 사이를 n_substeps 로 쪼개서 동일한 action 에 대해 n_substeps 만큼 반복하는 것 같다.
-    # 그냥 n_substeps 간 시간은 너무 짧아서 obs 의 변화가 거의 없기 때문에 일부로 여러개의 n_substeps 를 합쳐서 1개의 step 으로 사용하는 것 같다. 
+    """
+    position deviation 으로 제어하는데 0.1씩 변화를 주게되면 너무 큰 변화가 발생해 물체가 순간이동을 하게된다.
+    이를 방지하기 위해 한 step을 n_substeps로 쪼개서 움직인다.
+    즉, 0.1을 20번에 거쳐서 움직이기 때문에 부드러운 움직임이 가능하다.
+    단 이렇게 될 경우 step당 여러번 반복이 필요하기 때문에 학습 속도가 늦어질 것 같다.
+    """
     def _mujoco_step(self):
         self._mujoco.mj_step(self.model, self.data, nstep=self.n_substeps)
 

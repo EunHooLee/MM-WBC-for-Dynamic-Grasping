@@ -1,6 +1,6 @@
 import gymnasium as gym
 
-from wbc4dg.envs.robo import MujocoPandaReachEnv
+from wbc4dg.envs.mujoco import MujocoPandaReachEnv
 
 env = MujocoPandaReachEnv(reward_type="sparse")
 
