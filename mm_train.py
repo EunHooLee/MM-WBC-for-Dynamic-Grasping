@@ -26,7 +26,7 @@ torch.manual_seed(123456)
 np.random.seed(123456)
 
 # # Agent
-agent = SAC(env.observation_space["observation"].shape[0], env.action_space, gamma=0.99, tau=0.005, alpha=0.2, policy="Gaussian", target_update_interval=True, automatic_entropy_tuning=False, hidden_size=256,lr=0.0005)
+agent = SAC(env.observation_space["observation"].shape[0], env.action_space, gamma=0.99, tau=0.005, alpha=0.2, policy="Gaussian", target_update_interval=True, automatic_entropy_tuning=False, hidden_size=512,lr=0.0003)
 # agent.load_model('/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_actor_robotics_middle_check','/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_critic_robotics_middle_check','/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_value_robotics_middle_check`')
 # Memory
 memory = ReplayMemory(1000000, 123456)
@@ -74,8 +74,8 @@ for i_episode in range(100000):
         # print(state)
         if episode_steps==200:
             truncated = True
-        elif distance(state['observation'][:3],state['observation'][5:8])>4:
-            truncated =True
+        # elif distance(state['observation'][:3],state['observation'][5:8])>4:
+        #     truncated =True
         else:
             truncated =False
         # print(next_state)

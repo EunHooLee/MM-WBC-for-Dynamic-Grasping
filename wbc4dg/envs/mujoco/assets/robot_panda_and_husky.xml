@@ -4,8 +4,8 @@
         <geom name="base_link_visual" type="mesh" contype="0" conaffinity="0" group="1" mesh="mobile_base_link" />
         <site name="robot0:base_link" pos="0.0 0.0 0.0" size="0.02" rgba="1 0 0 1" type="sphere"></site>
         <!--controller-->
-        <joint name="robot0:base_joint1" type="slide" pos="0.0 0.0 0.0" axis="1 0 0" limited="true" range="-10 10" damping="15000"/>
-        <joint name="robot0:base_joint2" type="slide" pos="0.0 0.0 0.0" axis="0 1 0" limited="true" range="-10 10" damping="15000"/>
+        <joint name="robot0:base_joint1" type="slide" pos="0.0 0.0 0.0" axis="1 0 0" limited="true" range="-3 30" damping="15000"/>
+        <joint name="robot0:base_joint2" type="slide" pos="0.0 0.0 0.0" axis="0 1 0" limited="true" range="-5 5" damping="15000"/>
     	<inertial diaginertia="1.2869 1.2236 0.9868" mass="70.1294" pos="-0.0036 0 0.0014" quat="0.7605 -0.0133 -0.0061 0.6491"></inertial>
         <!-- husky mobile robot body -->
         <geom size="0.39496 0.28545 0.061875" pos="0 0 0.185625" type="box" />
