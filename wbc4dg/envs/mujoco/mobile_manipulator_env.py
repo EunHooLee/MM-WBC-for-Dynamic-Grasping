@@ -368,13 +368,13 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         
         # Object trajectory 
         if self.has_object:
-            object_xpos = self._utils.get_site_xpos(self.model, self.data, "object0")
+            object_plate_xpos = self._utils.get_site_xpos(self.model, self.data, "object0:plate")
             # object_action = np.array([0.01, 0.0, 0.01, 1.0, 0.0, 0.0, 0.0])
             
             # sinusoidal trajectory example
-            object_action = np.array([0.002 , (np.sin(0.002+object_xpos[0])-object_xpos[1]), 0.0, 1.0, 0.0, 0.0, 0.0])
+            object_plate_action = np.array([0.002 , (np.sin(0.002+object_plate_xpos[0])-object_plate_xpos[1]), 0.0, 1.0, 0.0, 0.0, 0.0])
             # object_action = np.array([0.005 , 0.0, (np.sin(0.005+object_xpos[0])-object_xpos[2]), 1.0, 0.0, 0.0, 0.0])
-            self._utils.mocap_set_action(self.model, self.data, object_action)
+            self._utils.mocap_set_action(self.model, self.data, object_plate_action)
             
 
     def generate_mujoco_observations(self):
@@ -413,7 +413,7 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
             # gripper state
             object_rel_pos = object_pos - grip_pos
             object_velp -= grip_velp
-            
+            print(object_pos)
         # else 실행 안됨
         else:
             object_pos = (
@@ -466,20 +466,24 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
             self.data.act[:] = None
 
         # Randomize start position of object.
-        if self.has_object:
-            object_xpos = self.initial_gripper_xpos[:2]
+        # if self.has_object:
+        #     object_plate_xpos = self.initial_gripper_xpos[:2]
             
-            object_xpos = np.array([
-                object_xpos[0]+self.np_random.uniform(2,3,size=1),
-                object_xpos[1]+self.np_random.uniform(-self.obj_range, self.obj_range, size=1),
-                self.np_random.uniform(0.7, 1.2, size=1)
-            ])
-            object_xpos = np.reshape(object_xpos,(3,))
-            object_xquat = np.array([1.0, 0.0, 0.0, 0.0])
+        #     object_plate_xpos = np.array([
+        #         object_plate_xpos[0]+self.np_random.uniform(2,3,size=1),
+        #         object_plate_xpos[1]+self.np_random.uniform(-self.obj_range, self.obj_range, size=1),
+        #         self.np_random.uniform(0.7, 1.2, size=1)
+        #     ])
+        #     object_plate_xpos = np.reshape(object_plate_xpos,(3,))
+        #     object_plate_xquat = np.array([1.0, 0.0, 0.0, 0.0])
 
-            self._utils.set_mocap_pos(self.model, self.data, "object0", object_xpos)
-            self._utils.set_mocap_quat(self.model, self.data, "object0", object_xquat)
-
+        #     self._utils.set_mocap_pos(self.model, self.data, "object0:plate", object_plate_xpos)
+        #     self._utils.set_mocap_quat(self.model, self.data, "object0:plate", object_plate_xquat)
+        
+        object_plate_xpos = np.array([1.0, 0.0, 0.95])
+        object_plate_xquat = np.array([1.0, 0.0, 0.0, 0.0])
+        self._utils.set_mocap_pos(self.model, self.data, "object0:plate", object_plate_xpos)
+        self._utils.set_mocap_quat(self.model, self.data, "object0:plate", object_plate_xquat)       
         self._mujoco.mj_forward(self.model, self.data)
         
         return True
@@ -494,22 +498,30 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         
         self._mujoco.mj_forward(self.model, self.data)
 
-        if self.has_object:
-            object_xpos = self._utils.get_site_xpos(self.model, self.data, "robot0:grip")[:2]
-            object_xpos = np.array([
-                object_xpos[0]+self.np_random.uniform(2,3,size=1),
-                object_xpos[1]+self.np_random.uniform(-self.obj_range, self.obj_range, size=1),
-                self.np_random.uniform(0.7, 1.2, size=1)
-            ])
-            object_xpos = np.reshape(object_xpos,(3,))
-            object_xquat = np.array([1.0, 0.0, 0.0, 0.0])
+        # if self.has_object:
+        #     object_plate_xpos = self._utils.get_site_xpos(self.model, self.data, "robot0:grip")[:2]
+        #     object_plate_xpos = np.array([
+        #         object_plate_xpos[0]+self.np_random.uniform(2,3,size=1),
+        #         object_plate_xpos[1]+self.np_random.uniform(-self.obj_range, self.obj_range, size=1),
+        #         self.np_random.uniform(0.7, 1.2, size=1)
+        #     ])
+        #     object_plate_xpos = np.reshape(object_plate_xpos,(3,))
+        #     object_plate_xquat = np.array([1.0, 0.0, 0.0, 0.0])
             
-            self._utils.set_mocap_pos(self.model, self.data, "object0", object_xpos)
-            self._utils.set_mocap_quat(self.model, self.data, "object0", object_xquat)
-
-        for _ in range(10):
-            self._mujoco.mj_step(self.model, self.data, nstep=self.n_substeps)
+        #     self._utils.set_mocap_pos(self.model, self.data, "object0:plate", object_plate_xpos)
+        #     self._utils.set_mocap_quat(self.model, self.data, "object0:plate", object_plate_xquat)
+        
+        # for _ in range(10):
+        #     self._mujoco.mj_step(self.model, self.data, nstep=self.n_substeps)
         # Extract information for sampling goals.
+
+
+        object_plate_xpos = np.array([1.0, 0.0, 0.95])
+        object_plate_xquat = np.array([1.0, 0.0, 0.0, 0.0])
+        self._utils.set_mocap_pos(self.model, self.data, "object0:plate", object_plate_xpos)
+        self._utils.set_mocap_quat(self.model, self.data, "object0:plate", object_plate_xquat)       
+        self._mujoco.mj_forward(self.model, self.data)
+
         self.initial_gripper_xpos = self._utils.get_site_xpos(
             self.model, self.data, "robot0:grip"
         ).copy()
