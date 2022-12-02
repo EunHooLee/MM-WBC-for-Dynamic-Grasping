@@ -50,6 +50,7 @@ Execute sequence (Exited from last number)
 우리는 MujocoEnv or MujocopyEnv 둘 중 하나를 선택해 사용하고, BaseMujocoEnv 까지는 그대로 사용해야 될 것 같다
 내 생각대로라면 4번만 혹은 1,4 번만 배껴서 새로 만들면 될 것 같다. 
 
+Readme Fix
 
 
 ## Installation
