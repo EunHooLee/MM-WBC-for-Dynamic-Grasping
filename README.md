@@ -33,25 +33,6 @@ gym 중요파일의 대략적인 실행 구조
 $ import gym
 $ env = gym.make('Walker2d-v4')
 ```
-```
-Execute sequence (Exited from last number)
-1, core.py - Env
-2, envs/registration.py - EnvSpec
-3, envs/registration.py - make
-4, envs/mujoco/waler2d_v4.py - Walker2DEnv
-5, envs/mujoco/mujoco_env.py - MujocoEnv
-6, envs/mujoco/mujoco_env.py - BaseMujocoEnv
-```
-- 5,6 번은 mujoco와 직접 연동되어서 mujoco로 계산된 데이터(action)를 전달하고, 변화된 상황(next state)을 반환하는 기능을 한다. 
-- 3 번은 5,6,을 wrapping 하는 class로 5,6의 데이터를 이용해 step, get_obs등의 main() 에서 사용될만한 것들을 core.py 의 Env 형태로 정의하고 있다.
-- 2 번은 자료형 정리
-- 1 번은 기본 틀만 있고 함수 내부는 구현되지 않았다. 아마 4번에서 구현된것이 그대로 사용되는 wrapper class 역할을 하고 있는 것 같다. 
-
-우리는 MujocoEnv or MujocopyEnv 둘 중 하나를 선택해 사용하고, BaseMujocoEnv 까지는 그대로 사용해야 될 것 같다
-내 생각대로라면 4번만 혹은 1,4 번만 배껴서 새로 만들면 될 것 같다. 
-
-Readme Fix
-
 
 ## Installation
 
