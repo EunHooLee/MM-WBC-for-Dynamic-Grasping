@@ -27,14 +27,6 @@ dynamic_grasping.xml
 
 <img src="./figures/Mobile_Manipulator.png" width= "400px" height="350px" alt="Mobile Manipulator"></img>
 
----
-gym 중요파일의 대략적인 실행 구조
-```python
-$ import gym
-$ env = gym.make('Walker2d-v4')
-```
-## TEST
-
 ## Installation
 
 
