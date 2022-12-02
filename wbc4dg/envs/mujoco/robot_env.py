@@ -7,15 +7,15 @@ import numpy as np
 from gymnasium import error, logger, spaces
 
 from gymnasium_robotics import GoalEnv
-from wbc4dg.envs.mujoco.utils import distance
-# try:
-#     import mujoco_py
 
-#     from gymnasium_robotics.utils import mujoco_py_utils
-# except ImportError as e:
-#     MUJOCO_PY_IMPORT_ERROR = e
-# else:
-#     MUJOCO_PY_IMPORT_ERROR = None
+try:
+    import mujoco_py
+
+    from gymnasium_robotics.utils import mujoco_py_utils
+except ImportError as e:
+    MUJOCO_PY_IMPORT_ERROR = e
+else:
+    MUJOCO_PY_IMPORT_ERROR = None
 
 try:
     import mujoco
@@ -29,11 +29,6 @@ else:
 
 DEFAULT_SIZE = 480
 
-
-
-# def distance(goal_a, goal_b):
-#     assert goal_a.shape == goal_b.shape
-#     return np.linalg.norm(goal_a - goal_b, axis=-1)
 
 class BaseRobotEnv(GoalEnv):
     """Superclass for all MuJoCo robotic environments."""
@@ -110,22 +105,14 @@ class BaseRobotEnv(GoalEnv):
         """All the available environments are currently continuing tasks and non-time dependent. The objective is to reach the goal for an indefinite period of time."""
         return False
 
-    def compute_truncated(self, obs_after, desired_goal, info):
-
-        # print(distance(obs_after['observation'][:3],obs_after['observation'][5:8]))
-        # if distance(obs_after['observation'][:3],obs_after['observation'][5:8])<4:
-        #     return False
-        # return True
+    def compute_truncated(self, achievec_goal, desired_goal, info):
+        """The environments will be truncated only if setting a time limit with max_steps which will automatically wrap the environment in a gymnasium TimeLimit wrapper."""
         return False
 
     def step(self, action):
         if np.array(action).shape != self.action_space.shape:
             raise ValueError("Action dimension mismatch")
         
-# '''edited to get the reward function of the coontrols and rewards'''
-        obs_before = self._get_obs()
-
-
         action = np.clip(action, self.action_space.low, self.action_space.high)
         
         self._set_action(action)
@@ -138,22 +125,20 @@ class BaseRobotEnv(GoalEnv):
 
         if self.render_mode == "human":
             self.render()
-        
-        obs_after = self._get_obs()
+
+        obs = self._get_obs()
         
         info = {
-            # "is_success": self._is_success(obs_after["achieved_goal"], self.goal),
+            "is_success": self._is_success(obs["observation"], self.goal),
         }
-
-        terminated = self.compute_terminated(obs_after["achieved_goal"], self.goal, info)
-        truncated = self.compute_truncated(obs_after, self.goal, info)
-
-        reward = self.compute_reward(obs_after, self.goal, info)
-
-# ----------------our reward---------------------------
-        # reward = self.compute_reward_dense(obs_before, obs_after, self.goal, info)
         
-        return obs_after, reward, terminated, truncated, info
+        terminated = self.compute_terminated(obs["achieved_goal"], self.goal, info)
+        truncated = self.compute_truncated(obs["achieved_goal"], self.goal, info)
+
+        reward = self.compute_reward(obs["observation"], self.goal, info)
+
+        self.goal = self._sample_goal().copy()
+        return obs, reward, terminated, truncated, info
 
     def reset(
         self,
@@ -326,3 +311,77 @@ class MujocoRobotEnv(BaseRobotEnv):
     def _mujoco_step(self):
         self._mujoco.mj_step(self.model, self.data, nstep=self.n_substeps)
 
+
+class MujocoPyRobotEnv(BaseRobotEnv):
+    def __init__(self, **kwargs):
+        if MUJOCO_PY_IMPORT_ERROR is not None:
+            raise error.DependencyNotInstalled(
+                f"{MUJOCO_PY_IMPORT_ERROR}. (HINT: you need to install mujoco_py, and also perform the setup instructions here: https://github.com/openai/mujoco-py/.)"
+            )
+        self._mujoco_py = mujoco_py
+        self._utils = mujoco_py_utils
+
+        logger.warn(
+            "This version of the mujoco environments depends "
+            "on the mujoco-py bindings, which are no longer maintained "
+            "and may stop working. Please upgrade to the v4 versions of "
+            "the environments (which depend on the mujoco python bindings instead), unless "
+            "you are trying to precisely replicate previous works)."
+        )
+
+        super().__init__(**kwargs)
+
+    def _initialize_simulation(self):
+        self.model = self._mujoco_py.load_model_from_path(self.fullpath)
+        self.sim = self._mujoco_py.MjSim(self.model, nsubsteps=self.n_substeps)
+        self.data = self.sim.data
+        
+        self._env_setup(initial_qpos=self.initial_qpos)
+        self.initial_state = copy.deepcopy(self.sim.get_state())
+
+    def _reset_sim(self):
+        self.sim.set_state(self.initial_state)
+        self.sim.forward()
+        return super()._reset_sim()
+
+    def render(self):
+        width, height = self.width, self.height
+        assert self.render_mode in self.metadata["render_modes"]
+        self._render_callback()
+        if self.render_mode in {
+            "rgb_array",
+            "rgb_array_list",
+        }:
+            self._get_viewer(self.render_mode).render(width, height)
+            # window size used for old mujoco-py:
+            data = self._get_viewer(self.render_mode).read_pixels(
+                width, height, depth=False
+            )
+            # original image is upside-down, so flip it
+            return data[::-1, :, :]
+        elif self.render_mode == "human":
+            self._get_viewer(self.render_mode).render()
+
+    def _get_viewer(
+        self, mode
+    ) -> Union["mujoco_py.MjViewer", "mujoco_py.MjRenderContextOffscreen"]:
+        self.viewer = self._viewers.get(mode)
+        if self.viewer is None:
+            if mode == "human":
+                self.viewer = self._mujoco_py.MjViewer(self.sim)
+
+            elif mode in {
+                "rgb_array",
+                "rgb_array_list",
+            }:
+                self.viewer = self._mujoco_py.MjRenderContextOffscreen(self.sim, -1)
+            self._viewer_setup()
+            self._viewers[mode] = self.viewer
+        return self.viewer
+
+    @property
+    def dt(self):
+        return self.sim.model.opt.timestep * self.sim.nsubsteps
+
+    def _mujoco_step(self, action):
+        self.sim.step()

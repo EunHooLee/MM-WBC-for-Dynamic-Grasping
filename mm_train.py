@@ -18,7 +18,7 @@ _model_name = mujoco_utils.MujocoModelNames(env.model)
 
 print("cuda" if torch.cuda.is_available() else "cpu")
 # print(env._max_episode_steps)
-state,_=env.reset()
+observation,_=env.reset()
 
 
 
@@ -43,17 +43,15 @@ for i_episode in range(100000):
     episode_steps = 0
     truncated = False
     terminated = False
-    state,_ = env.reset() 
-
+    observation,_ = env.reset() 
+    
     
     while not terminated:
-        if truncated:
-            break
 
         if 1000 > total_numsteps:
             action = env.action_space.sample()  # Sample random action
         else:
-            action = agent.select_action(state['observation'])  # Sample action from policy
+            action = agent.select_action(observation['observation'])  # Sample action from policy
 
 
         if len(memory) > 256:
@@ -63,28 +61,39 @@ for i_episode in range(100000):
                 value_loss, critic_1_loss, critic_2_loss, policy_loss = agent.update_parameters(memory, 256, updates)
                 updates += 1
             
-        next_state, reward, terminated, truncated, info = env.step(action) # Step
+        next_observation, reward, terminated, truncated, info = env.step(action) # Step
         episode_steps += 1
         total_numsteps += 1
         episode_reward += reward
+        mask  = 1 if episode_steps == 100 else float(not terminated)
+        
         # print("pass",total_numsteps)
         # Ignore the "done" signal if it comes from hitting the time horizon.
         # (https://github.com/openai/spinningup/blob/master/spinup/algos/sac/sac.py)
-        mask  = 1 if episode_steps == 200 else float(not terminated)
-        # print(mask)
-        # print(state)
-        if episode_steps==200:
-            truncated = True
-        # elif distance(state['observation'][:3],state['observation'][5:8])>4:
-        #     truncated =True
-        else:
-            truncated =False
-        # print(next_state)
-        # terminated = True if (next_state[1]>0.2 or next_state[1]<-0.2) else False
 
-        memory.push(state['observation'], action, reward, next_state['observation'], mask) # Append transition to memory
+
+        memory.push(observation['observation'], action, reward, next_observation['observation'], mask) # Append transition to memory
+        observation = next_observation
+
+        
+
+        # print(mask)
+        # print(observation)
+        if episode_steps==100:
+            terminated = True
+        # # elif distance(observation['observation'][:3],observation['observation'][5:8])>4:
+        # #     truncated =True
+        else:
+            terminated =False
+        # print(next_observation)
+        # terminated = True if (next_observation[1]>0.2 or next_observation[1]<-0.2) else False
+
         # print("checking: ",terminated,",", truncated)
-        state = next_state
+        
+        
+        # if truncated:
+        #     break
+
 
     if max_reward_train < episode_reward:
         agent.save_model("","best_reward")
@@ -94,7 +103,8 @@ for i_episode in range(100000):
         agent.save_model("","middle")
 
     # writer.add_scalar('reward/train', episode_reward, i_episode)
-    print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2)))
+
+    # print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2)))
     
     # if i_episode%1000==999: 
     #     avg_reward = 0.
@@ -102,13 +112,13 @@ for i_episode in range(100000):
     #     episode_reward =0
     #     terminated=False
     #     truncated = False
-    #     state, _ =env.reset()
+    #     observation, _ =env.reset()
     #     while not terminated:
-    #         action = agent.select_action(state['observation'], eval=True)
-    #         next_state, reward, truncated, terminated, _ = env.step(action)
+    #         action = agent.select_action(observation['observation'], eval=True)
+    #         next_observation, reward, truncated, terminated, _ = env.step(action)
     #         # env.render()
     #         episode_reward += reward
-    #         state = next_state
+    #         observation = next_observation
             
     #     avg_reward += episode_reward
 
@@ -126,11 +136,11 @@ for i_episode in range(100000):
 env.close()
 
 # agent.load_checkpoint('/home/yeoma/code/pytorch-soft-actor-critic/checkpoints/sac_checkpoint_hopper-v4_checking',True)
-# state,_=env.reset()
+# observation,_=env.reset()
 # terminated = False
 # while not terminated:
-#     action = agent.select_action(state, evaluate=True)
-#     next_state, reward, truncated, terminated, _ = env.step(action)
+#     action = agent.select_action(observation, evaluate=True)
+#     next_observation, reward, truncated, terminated, _ = env.step(action)
 
 
 # env.close()
