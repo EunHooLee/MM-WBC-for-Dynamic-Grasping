@@ -71,13 +71,32 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
         # GoalEnv methods
         # ----------------------------
 
-        def compute_reward(self, achieved_goal, goal, info):
+        def compute_reward(self, observation, goal, info):
             # Compute distance between goal and the achieved goal.
-            d = goal_distance(achieved_goal, goal)
+           
             if self.reward_type == "sparse":
+                d = goal_distance(observation[3:6], goal)
                 return -(d > self.distance_threshold).astype(np.float32)
             else:
-                return -d
+                # Compute distance between goal and the achieved goal.
+                r_dist = goal_distance(observation[3:6], goal)
+                r_vel = goal_distance(observation[17:20], np.zeros(3))
+                w_dist = 3
+                w_vel = 2
+
+                R_dense = -(w_dist*r_dist) - (w_vel*r_vel) + np.exp(-100*pow(r_dist,2))
+                R_sparse = 0
+
+                if info["is_success"]:
+                    R_sparse = 200
+                elif (r_vel<=0.2 and r_dist>0.5):
+                    R_sparse = -5.0
+                elif (r_vel>0.2 and r_dist<=0.5):
+                    R_sparse = -10.0
+                elif (r_vel<=0.2 and r_dist<=0.5):
+                    R_sparse = 10.0
+
+                return R_dense + R_sparse
 
         # RobotEnv methods
         # ----------------------------
@@ -182,24 +201,35 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
         11.16 - leh
         _sample_goal(), _is_success() 는 우리가 제시하는 방법에 맞게 수정해야 하는 부분이다. 
         """
+        # def _sample_goal(self):
+        #     if self.has_object:
+        #         goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(
+        #             -self.target_range, self.target_range, size=3
+        #         )
+        #         goal += self.target_offset
+        #         goal[2] = self.height_offset
+        #         if self.target_in_the_air and self.np_random.uniform() < 0.5:
+        #             goal[2] += self.np_random.uniform(0, 0.45)
+        #     else:
+        #         goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(
+        #             -self.target_range, self.target_range, size=3
+        #         )
+        #     return goal.copy()
+
         def _sample_goal(self):
             if self.has_object:
-                goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(
-                    -self.target_range, self.target_range, size=3
-                )
-                goal += self.target_offset
-                goal[2] = self.height_offset
-                if self.target_in_the_air and self.np_random.uniform() < 0.5:
-                    goal[2] += self.np_random.uniform(0, 0.45)
-            else:
-                goal = self.initial_gripper_xpos[:3] + self.np_random.uniform(
-                    -self.target_range, self.target_range, size=3
-                )
+                goal = self._utils.get_site_xpos(self.model, self.data, "object0")
             return goal.copy()
 
-        def _is_success(self, achieved_goal, desired_goal):
-            d = goal_distance(achieved_goal, desired_goal)
-            return (d < self.distance_threshold).astype(np.float32)
+        def _is_success(self, observation, desired_goal):
+            d = goal_distance(observation[3:6], desired_goal)
+            v = goal_distance(observation[17:20],np.array([0,0,0]))
+            d_gripper = abs(observation[12]-observation[13])
+
+            if (d<0.02 and v<0.05 and d_gripper<0.045 and d_gripper>0.38):
+                return True
+            # return (d < self.distance_threshold).astype(np.float32)
+            return False
 
     return BaseMMEnv
 
@@ -242,7 +272,7 @@ class MujocoPyMMEnv(get_base_fetch_env(MujocoPyRobotEnv)):
             object_pos = (
                 object_rot
             ) = object_velp = object_velr = object_rel_pos = np.zeros(0)
-       
+        
         gripper_state = robot_qpos[-2:]
 
         gripper_vel = (
@@ -390,8 +420,9 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
                 object_rot
             ) = object_velp = object_velr = object_rel_pos = np.zeros(0)
         
+        # 왜 state가 음수도 나오고 0.04 (JOINT MAX) 이상 값도 나오지?
         gripper_state = robot_qpos[-2:] # 배열의 뒤에서 부터 2개 (object joint는 qpos에서 안뜬다.)
-        
+        # print(gripper_state)
         gripper_vel = (
             robot_qvel[-2:] * dt
         )  # change to a scalar if the gripper is made symmetric
