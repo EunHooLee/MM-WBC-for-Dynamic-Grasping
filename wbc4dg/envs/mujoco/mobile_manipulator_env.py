@@ -413,7 +413,7 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
             # gripper state
             object_rel_pos = object_pos - grip_pos
             object_velp -= grip_velp
-            print(object_pos)
+            
         # else 실행 안됨
         else:
             object_pos = (

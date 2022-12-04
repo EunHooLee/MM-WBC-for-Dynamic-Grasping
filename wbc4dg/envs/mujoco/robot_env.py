@@ -48,7 +48,7 @@ class BaseRobotEnv(GoalEnv):
         initial_qpos,                       # MujocoPyMMDynamicGraspingEnv() 에서 입력
         n_actions: int,                     # BaseMMEnv() 에서 입력
         n_substeps: int,                    # MujocoPyMMDynamicGraspingEnv() 에서 입력
-        render_mode: Optional[str] = False,  # 여기 값 이용
+        render_mode: Optional[str] = "human",  # 여기 값 이용
         width: int = DEFAULT_SIZE,          # 여기 값 이용
         height: int = DEFAULT_SIZE,         # 여기 값 이용
     ):
