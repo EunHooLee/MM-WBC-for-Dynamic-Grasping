@@ -63,9 +63,7 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
             self.target_range = target_range
             self.distance_threshold = distance_threshold
             self.reward_type = reward_type
-            self.a = 0  # 없
-            self.b = 0  # 애
-            self.k = 0  # 기
+            self.success_count = 0
             super().__init__(n_actions=10, **kwargs)         # n_action : 2 DoF (base) + 7 DoF (arm) + 1DoF (gripper)
 
         # GoalEnv methods
@@ -110,7 +108,7 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
             
             base_ctrl, ee_ctrl, gripper_ctrl = action[:2] ,action[2:9], action[9:]
             # 아래 리미트 설정 한해주면 DOF ~~ Nan, inf 오류뜬다.
-            base_ctrl *= 0.3
+            base_ctrl *= 0.4
             ee_ctrl *= 0.1
             
 
@@ -231,7 +229,11 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
             d_gripper = abs(observation[12]-observation[13])
 
             if (d<0.02 and v<0.05 and d_gripper<0.045 and d_gripper>0.038):
-                return True
+                self.success_count +=1
+                if self.success_count >= 3:
+                    return True
+                else: 
+                    return False
             # return (d < self.distance_threshold).astype(np.float32)
             return False
 
@@ -372,9 +374,9 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         
         # Object trajectory 
         if self.has_object:
-            _object_plate_xpos = self._utils.get_site_xpos(self.model, self.data, "object0:plate")
-
+            _object_plate_xpos = self._utils.get_site_xpos(self.model, self.data, "plate")
             
+            # object_plate_action = np.array([0.001, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0])
             object_plate_action = np.array([0.001, (np.sin(_object_plate_xpos[0] + 0.001 -1.5)-_object_plate_xpos[1]) ,0.0, 1.0, 0.0, 0.0, 0.0])
 
 
@@ -433,7 +435,7 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
             object_pos = (
                 object_rot
             ) = object_velp = object_velr = object_rel_pos = np.zeros(0)
-        
+     
         # 왜 state가 음수도 나오고 0.04 (JOINT MAX) 이상 값도 나오지?
         gripper_state = robot_qpos[-2:] # 배열의 뒤에서 부터 2개 (object joint는 qpos에서 안뜬다.)
         # print(object_pos)
@@ -476,7 +478,7 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         self.data.time = self.initial_time
         self.data.qpos[:] = np.copy(self.initial_qpos)
         self.data.qvel[:] = np.copy(self.initial_qvel)
-        self.cnt = 0
+        self.success_count = 0
         # if self.model.na != 0:
         #     self.data.act[:] = None
 
@@ -496,24 +498,15 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         #     self._utils.set_mocap_quat(self.model, self.data, "object0:plate", object_plate_xquat)
         
         if self.has_object:
-            # object_xpos = self.initial_gripper_xpos[:2]
-            # while np.linalg.norm(object_xpos - self.initial_gripper_xpos[:2]) < 0.1:
-            #     object_xpos = self.initial_gripper_xpos[:2] + self.np_random.uniform(
-            #         -self.obj_range, self.obj_range, size=2
-            #     )
-            # object_qpos = self._utils.get_joint_qpos(
-            #     self.model, self.data, "object0:joint"
-            # )
-            # assert object_qpos.shape == (7,)
-            # object_qpos[:2] = object_xpos
-            # print(object_qpos)
-            object_qpos = np.array([1.5, 0.0, 0.7, 1.0, 0.0, 0.0, 0.0])
+            
+            object_qpos = np.array([1.5, 0.0, 2.3, 1.0, 0.0, 0.0, 0.0])
             self._utils.set_joint_qpos(
                 self.model, self.data, "object0:joint", object_qpos
             )
-
-            self._utils.set_mocap_pos(self.model, self.data, "object0:plate", np.array([1.5 ,0.0, 0.67]))
-            self._utils.set_mocap_quat(self.model, self.data, "obejct0:plate", np.array([1.0, 0.0, 0.0, 0.0]))
+            # print(self._utils.get_site_xpos(self.model, self.data, "plate"))
+            
+            self._utils.set_mocap_pos(self.model, self.data, "plate0:mocap", np.array([1.5 ,0.0, 0.68]))
+            self._utils.set_mocap_quat(self.model, self.data, "plate0:mocap", np.array([1.0, 0.0, 0.0, 0.0]))
             
         # print("object_qpos: ", self._utils.get_joint_qpos(self.model, self.data, "object0:joint"))
         
@@ -524,10 +517,10 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         
         # random deployement of the robot
         self.base_pos = self._utils.get_site_xpos(self.model, self.data, "robot0:base_link").copy()
-        # robot_x = self.base_pos[1] + self.np_random.uniform(-1.0,0.0)
-        # robot_y = self.base_pos[2] + self.np_random.uniform(-1.0,1.0)
-        robot_x = self.base_pos[1] 
-        robot_y = self.base_pos[2] - np.array([0.2])
+        robot_x = self.base_pos[1] + self.np_random.uniform(-1.0,0.0)
+        robot_y = self.base_pos[2] + self.np_random.uniform(-1.0,1.0)
+        # robot_x = self.base_pos[1] 
+        # robot_y = self.base_pos[2] - np.array([0.2])
         self._utils.set_joint_qpos(self.model, self.data, "robot0:base_joint1", robot_x)
         self._utils.set_joint_qpos(self.model, self.data, "robot0:base_joint2", robot_y)
 
@@ -546,7 +539,7 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
 
         
         if self.has_object:
-            self._utils.set_mocap_pos(self.model, self.data, "object0:plate", np.array([0.0 ,0.0, 2.0]))
+            self._utils.set_mocap_pos(self.model, self.data, "object0:plate", np.array([1.5 ,0.0, 0.68]))
             self._utils.set_mocap_quat(self.model, self.data, "object0:plate", np.array([1.0, 0.0, 0.0, 0.0]))
 
 

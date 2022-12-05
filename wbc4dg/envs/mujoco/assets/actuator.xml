@@ -46,10 +46,11 @@
         <position name="arm_joint7" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint7" kp="2000"/>
         
         <!-- Panda gripper joint controller-->
-        <!-- <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:l_gripper_finger_joint" kp="30000" name="robot0:l_gripper_finger_joint" user="1"></position>
-        <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:r_gripper_finger_joint" kp="30000" name="robot0:r_gripper_finger_joint" user="1"></position> -->
+        <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:l_gripper_finger_joint" kp="30000" name="robot0:l_gripper_finger_joint" user="1"></position>
+        <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:r_gripper_finger_joint" kp="30000" name="robot0:r_gripper_finger_joint" user="1"></position>
 
-        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="robot0:l_gripper_finger_joint" name="robot0:l_gripper_finger_joint" gear="200.0" user="1"></motor>
+        <!-- <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="robot0:l_gripper_finger_joint" name="robot0:l_gripper_finger_joint" gear="200.0" user="1"></motor>
         <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="robot0:r_gripper_finger_joint" name="robot0:r_gripper_finger_joint" gear="200.0" user="1"></motor>
+     -->
     </actuator>
 </mujoco>

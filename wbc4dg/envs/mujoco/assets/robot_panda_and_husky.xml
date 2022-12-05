@@ -1,5 +1,9 @@
 <mujoco>
 
+    <body mocap="true" name="plate0:mocap" pos="0.0 0.0 0.0">
+		<!-- <geom conaffinity="0" contype="0" pos="0 0. 0" rgba="0.0 0.5 0.0 0.5" size="0.005 0.005 0.005" type="box" group="1"></geom> -->
+	</body>
+
     <body name="robot0:base_link" pos="0.0 0.0 0.14493">
         <geom name="base_link_visual" type="mesh" contype="0" conaffinity="0" group="1" mesh="mobile_base_link" />
         <site name="robot0:base_link" pos="0.0 0.0 0.0" size="0.02" rgba="1 0 0 1" type="sphere"></site>

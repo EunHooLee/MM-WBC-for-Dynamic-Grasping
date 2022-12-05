@@ -127,12 +127,13 @@
     </asset>
 
     <equality>
+        <weld body1="plate0:mocap" body2="plate0" solimp="0.9 0.95 0.001" solref="0.02"></weld>
     </equality>
 
 
     <visual>
         <map fogstart="3" fogend="5" force="0.1" znear="0.1"/>
-        <quality shadowsize="2048" offsamples="8"/>
+        <quality shadowsize="2048" offsamples="8"/> 
         <global offwidth="800" offheight="800"/>
     </visual>
 

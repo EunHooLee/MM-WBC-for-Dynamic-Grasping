@@ -167,13 +167,13 @@ class BaseRobotEnv(GoalEnv):
         # configuration.
         super().reset(seed=seed)
         did_reset_sim = False
-        print("1")
+
         while not did_reset_sim:
             did_reset_sim = self._reset_sim()
             # 새로 시작할때마다 goal sampling
         self.goal = self._sample_goal().copy()
         obs = self._get_obs()
-        print("3")
+     
         if self.render_mode == "human":
             self.render()
         
@@ -279,7 +279,7 @@ class MujocoRobotEnv(BaseRobotEnv):
         self.data.qvel[:] = np.copy(self.initial_qvel)
         if self.model.na != 0:
             self.data.act[:] = None
-        print("=-------------------")
+
         mujoco.mj_forward(self.model, self.data)
         return super()._reset_sim()
 
