@@ -28,7 +28,21 @@ else:
     MUJOCO_IMPORT_ERROR = None
 
 DEFAULT_SIZE = 480
+"""
+Answer 1:
 
+The change you are making is somehow causing the simulation to become unstable. When that happens, you get a warning and the state is automatically reset.
+
+So you should find a way to avoid the instability. My guess is that the position you are setting is causing a large contact penetration, or some other large constraint violation.
+
+----
+The simulator monitors the system state for large numbers or infs/nans, and resets automatically if it finds them. I am not sure why you are changing qpos directly; 
+the whole point of a simulator is to change the positions for you automatically, while you provide control signals. 
+Anyway, it is possible that you are changing the position in such a way that it creates a large joint or contact penetration, which triggers a large correction making the simulation unstable.
+MuJoCo uses a soft constraint model so you can in principle do this if you want, but you have to use much smaller time steps.
+
+
+"""
 
 class BaseRobotEnv(GoalEnv):
     """Superclass for all MuJoCo robotic environments."""
@@ -153,14 +167,16 @@ class BaseRobotEnv(GoalEnv):
         # configuration.
         super().reset(seed=seed)
         did_reset_sim = False
+        print("1")
         while not did_reset_sim:
             did_reset_sim = self._reset_sim()
             # 새로 시작할때마다 goal sampling
         self.goal = self._sample_goal().copy()
         obs = self._get_obs()
+        print("3")
         if self.render_mode == "human":
             self.render()
-
+        
         return obs, {}
 
     def close(self):
@@ -255,6 +271,7 @@ class MujocoRobotEnv(BaseRobotEnv):
         self.initial_time = self.data.time
         self.initial_qpos = np.copy(self.data.qpos)
         self.initial_qvel = np.copy(self.data.qvel)
+        
 
     def _reset_sim(self):
         self.data.time = self.initial_time
@@ -262,7 +279,7 @@ class MujocoRobotEnv(BaseRobotEnv):
         self.data.qvel[:] = np.copy(self.initial_qvel)
         if self.model.na != 0:
             self.data.act[:] = None
-
+        print("=-------------------")
         mujoco.mj_forward(self.model, self.data)
         return super()._reset_sim()
 

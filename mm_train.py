@@ -44,7 +44,7 @@ for i_episode in range(100000):
     truncated = False
     terminated = False
     observation,_ = env.reset() 
-    
+    print("4")
     
     while not terminated:
 
@@ -73,12 +73,12 @@ for i_episode in range(100000):
 
         memory.push(observation['observation'], action, reward, next_observation['observation'], mask) # Append transition to memory
         observation = next_observation
-
+        
         
 
         # print(mask)
         # print(observation)
-        if episode_steps==200:
+        if episode_steps==2000:
             truncated = True
         # elif distance(observation['observation'][:3],observation['observation'][5:8])>4:
         #     truncated =True
