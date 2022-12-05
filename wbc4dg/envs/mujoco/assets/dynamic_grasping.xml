@@ -31,24 +31,24 @@
 
 		<body name="object0" pos="1.0 0.0 1.0">
 			<joint name="object0:joint" type="free" damping="0.01" limited="false"></joint>
-			<geom size="0.02 0.02 0.02" type="box" condim="4" mass="0.5" rgba="0.6 0.9 0.4 1" friction="1 1 1"/>
+			<geom size="0.02 0.02 0.02" type="box" condim="4" mass="0.5" rgba="0.6 0.9 0.4 1" solimp="0.99 0.99 0.01" solref="0.01 1" friction="1 1 1"/>
 			<site name="object0" pos="0.0 0.0 0.0" size="0.02" rgba="1 0 0 1" type="sphere"></site>
 		</body>
 
 		<body name="object0:plate" pos="1.0 0.0 0.96" mocap="true">
-			<geom size="0.07 0.07 0.005" type="box" density="567" condim="1" material="" rgba="0.0 0.9 0.4 1"/>
+			<geom size="0.06 0.06 0.005" type="box" density="567" condim="1" material="" rgba="0.0 0.9 0.4 1"/>
 			<site name="object0:plate" pos="0.0 0.0 0.0" size="0.001" rgba="1 0 0 1" type="sphere"></site>
-			<body name="object0:plate_block_1" pos="-0.05 0.0 0.025">
-				<geom size="0.005 0.05 0.02" type="box" density="567" condim="1" material="" rgba="1.0 0.9 0.4 1"/>
+			<body name="object0:plate_block_1" pos="-0.05 0.0 0.013" >
+				<geom size="0.005 0.05 0.008" type="box" density="567" condim="1" material="" rgba="1.0 0.9 0.4 1"/>
 			</body>
-			<body name="object0:plate_block_2" pos="0.0 -0.05 0.025">
-				<geom size="0.045 0.005 0.02" type="box" density="567" condim="1" material="" rgba="1.0 0.9 0.4 1"/>
+			<body name="object0:plate_block_2" pos="0.0 -0.05 0.013">
+				<geom size="0.045 0.005 0.008" type="box" density="567" condim="1" material="" rgba="1.0 0.9 0.4 1"/>
 			</body>
-			<body name="object0:plate_block_3" pos="0.0 0.05 0.025">
-				<geom size="0.045 0.005 0.02" type="box" density="567" condim="1" material="" rgba="1.0 0.9 0.4 1"/>
+			<body name="object0:plate_block_3" pos="0.0 0.05 0.013">
+				<geom size="0.045 0.005 0.008" type="box" density="567" condim="1" material="" rgba="1.0 0.9 0.4 1"/>
 			</body>
-			<body name="object0:plate_block_4" pos="0.05 0.0 0.025">
-				<geom size="0.005 0.05 0.02" type="box" density="567" condim="1" material="" rgba="1.0 0.9 0.4 1"/>
+			<body name="object0:plate_block_4" pos="0.05 0.0 0.013">
+				<geom size="0.005 0.05 0.008" type="box" density="567" condim="1" material="" rgba="1.0 0.9 0.4 1"/>
 			</body>
 		</body>
 

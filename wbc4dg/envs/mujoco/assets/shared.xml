@@ -129,8 +129,6 @@
     <equality>
     </equality>
 
-    <contact>
-    </contact>
 
     <visual>
         <map fogstart="3" fogend="5" force="0.1" znear="0.1"/>

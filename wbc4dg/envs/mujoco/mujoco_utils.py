@@ -47,7 +47,7 @@ def ctrl_set_action(model, data, action):
             # motor position control
                 idx = model.jnt_qposadr[model.actuator_trnid[i,0]]
                 data.ctrl[i] = data.qpos[idx] + action[i]
-
+                # print(idx)
 
 def mocap_set_action(model, data, action):
     """The action controls the robot using mocaps. Specifically, bodies

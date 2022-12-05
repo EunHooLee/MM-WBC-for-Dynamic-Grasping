@@ -111,8 +111,8 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
             base_ctrl, ee_ctrl, gripper_ctrl = action[:2] ,action[2:9], action[9:]
             # 아래 리미트 설정 한해주면 DOF ~~ Nan, inf 오류뜬다.
             base_ctrl *= 0.3
-            ee_ctrl *= 0.05
-
+            ee_ctrl *= 0.1
+            
 
             # # ----------------------------------------------------
             # # ########### Action Test Example #############
@@ -373,17 +373,18 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         # Object trajectory 
         if self.has_object:
             _object_plate_xpos = self._utils.get_site_xpos(self.model, self.data, "object0:plate")
-            #print(_object_plate_xpos)
-            # sinusoidal trajectory example
-            # object_plate_action = np.array([0.002 , (np.sin(0.002+object_plate_xpos[0])-object_plate_xpos[1]), 0.0, 1.0, 0.0, 0.0, 0.0])
+
             
-            # object_plate_action = np.array([0.002, np.sin(_object_plate_xpos[0] + 0.002 -2)-_object_plate_xpos[1] ,0.0, 1.0, 0.0, 0.0, 0.0])
-            if self.cnt < 100:
-                object_plate_action = np.array([0.002, np.sin(_object_plate_xpos[0] + 0.002 -2)-_object_plate_xpos[1] ,0.0, 1.0, 0.0, 0.0, 0.0])
-                # print("slow")
-            else:
-                # 가속도 즉, 위치 변화가 너무 크게 변하면 튕겨나감
-                object_plate_action = np.array([0.003, np.sin(_object_plate_xpos[0] + 0.003 -2)-_object_plate_xpos[1] ,0.0, 1.0, 0.0, 0.0, 0.0])
+            object_plate_action = np.array([0.001, (np.sin(_object_plate_xpos[0] + 0.001 -1.5)-_object_plate_xpos[1]) ,0.0, 1.0, 0.0, 0.0, 0.0])
+
+
+
+            # if self.cnt < 100:
+            #     object_plate_action = np.array([0.002, np.sin(_object_plate_xpos[0] + 0.002 -2)-_object_plate_xpos[1] ,0.0, 1.0, 0.0, 0.0, 0.0])
+            #     # print("slow")
+            # else:
+            #     # 가속도 즉, 위치 변화가 너무 크게 변하면 튕겨나감
+            #     object_plate_action = np.array([0.003, np.sin(_object_plate_xpos[0] + 0.003 -2)-_object_plate_xpos[1] ,0.0, 1.0, 0.0, 0.0, 0.0])
                 # print("fast")
             # object_action = np.array([0.005 , 0.0, (np.sin(0.005+object_xpos[0])-object_xpos[2]), 1.0, 0.0, 0.0, 0.0])
             # self.cnt +=1
@@ -471,7 +472,7 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
 
 
     def _reset_sim(self):
-        print("2")
+        
         self.data.time = self.initial_time
         self.data.qpos[:] = np.copy(self.initial_qpos)
         self.data.qvel[:] = np.copy(self.initial_qvel)
@@ -506,12 +507,12 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
             # assert object_qpos.shape == (7,)
             # object_qpos[:2] = object_xpos
             # print(object_qpos)
-            object_qpos = np.array([2.0, 0.0, 2.0, 1.0, 0.0, 0.0, 0.0])
+            object_qpos = np.array([1.5, 0.0, 0.7, 1.0, 0.0, 0.0, 0.0])
             self._utils.set_joint_qpos(
                 self.model, self.data, "object0:joint", object_qpos
             )
 
-            self._utils.set_mocap_pos(self.model, self.data, "object0:plate", np.array([2.0 ,0.0, 1.97]))
+            self._utils.set_mocap_pos(self.model, self.data, "object0:plate", np.array([1.5 ,0.0, 0.67]))
             self._utils.set_mocap_quat(self.model, self.data, "obejct0:plate", np.array([1.0, 0.0, 0.0, 0.0]))
             
         # print("object_qpos: ", self._utils.get_joint_qpos(self.model, self.data, "object0:joint"))
@@ -523,9 +524,10 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         
         # random deployement of the robot
         self.base_pos = self._utils.get_site_xpos(self.model, self.data, "robot0:base_link").copy()
-        robot_x = self.base_pos[1] + self.np_random.uniform(-1.0,0.0)
-        robot_y = self.base_pos[2] + self.np_random.uniform(-1.0,1.0)
-        
+        # robot_x = self.base_pos[1] + self.np_random.uniform(-1.0,0.0)
+        # robot_y = self.base_pos[2] + self.np_random.uniform(-1.0,1.0)
+        robot_x = self.base_pos[1] 
+        robot_y = self.base_pos[2] - np.array([0.2])
         self._utils.set_joint_qpos(self.model, self.data, "robot0:base_joint1", robot_x)
         self._utils.set_joint_qpos(self.model, self.data, "robot0:base_joint2", robot_y)
 

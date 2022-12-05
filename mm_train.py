@@ -38,13 +38,12 @@ total_numsteps = 0
 print('===========started=============')
 updates = 0
 
-for i_episode in range(100000):
+for i_episode in range(10000):
     episode_reward = 0
     episode_steps = 0
     truncated = False
     terminated = False
     observation,_ = env.reset() 
-    print("4")
     
     while not terminated:
 
@@ -78,7 +77,7 @@ for i_episode in range(100000):
 
         # print(mask)
         # print(observation)
-        if episode_steps==2000:
+        if episode_steps==300:
             truncated = True
         # elif distance(observation['observation'][:3],observation['observation'][5:8])>4:
         #     truncated =True
