@@ -38,7 +38,7 @@ def ctrl_set_action(model, data, action):
     """For torque actuators it copies the action into mujoco ctrl field.
     For position actuators it sets the target relative to the current qpos.
     """
-    
+    print(data.ctrl)
     if len(data.ctrl) > 0:
         for i in range(action.shape[0]):
             # motor position control

@@ -104,7 +104,7 @@ for i_episode in range(100000):
 
     # writer.add_scalar('reward/train', episode_reward, i_episode)
 
-    # print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2)))
+    print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2)))
     
     # if i_episode%1000==999: 
     #     avg_reward = 0.

@@ -62,6 +62,7 @@ class BaseRobotEnv(GoalEnv):
         if not os.path.exists(self.fullpath):
             raise OSError(f"File {self.fullpath} does not exist")
         
+        self.passed_substeps=0
         
         self.n_substeps = n_substeps
         
@@ -115,11 +116,12 @@ class BaseRobotEnv(GoalEnv):
         
         action = np.clip(action, self.action_space.low, self.action_space.high)
         
-        self._set_action(action)
+        self._set_action(action,self.passed_substeps)
         
         # _mujoco_step()에 action안들어가도 됨 그래서 빼버림
         self._mujoco_step()
 
+        self.passed_substeps+=1
         # gripper 가 block 일때만 사용.
         # self._step_callback()
 
@@ -153,6 +155,7 @@ class BaseRobotEnv(GoalEnv):
         # configuration.
         super().reset(seed=seed)
         did_reset_sim = False
+        self.passed_substeps=0
         while not did_reset_sim:
             did_reset_sim = self._reset_sim()
             # 새로 시작할때마다 goal sampling
@@ -194,7 +197,7 @@ class BaseRobotEnv(GoalEnv):
         """Returns the observation."""
         raise NotImplementedError()
 
-    def _set_action(self, action):
+    def _set_action(self, action,passed_substeps):
         """Applies the given action to the simulation."""
         raise NotImplementedError()
 
@@ -223,13 +226,6 @@ class BaseRobotEnv(GoalEnv):
         to implement custom visualizations.
         """
         pass
-
-    def _step_callback(self):
-        """A custom callback that is called after stepping the simulation. Can be used
-        to enforce additional constraints on the simulation state.
-        """
-        pass
-
 
 class MujocoRobotEnv(BaseRobotEnv):
     def __init__(self, **kwargs):
@@ -310,78 +306,3 @@ class MujocoRobotEnv(BaseRobotEnv):
     """
     def _mujoco_step(self):
         self._mujoco.mj_step(self.model, self.data, nstep=self.n_substeps)
-
-
-class MujocoPyRobotEnv(BaseRobotEnv):
-    def __init__(self, **kwargs):
-        if MUJOCO_PY_IMPORT_ERROR is not None:
-            raise error.DependencyNotInstalled(
-                f"{MUJOCO_PY_IMPORT_ERROR}. (HINT: you need to install mujoco_py, and also perform the setup instructions here: https://github.com/openai/mujoco-py/.)"
-            )
-        self._mujoco_py = mujoco_py
-        self._utils = mujoco_py_utils
-
-        logger.warn(
-            "This version of the mujoco environments depends "
-            "on the mujoco-py bindings, which are no longer maintained "
-            "and may stop working. Please upgrade to the v4 versions of "
-            "the environments (which depend on the mujoco python bindings instead), unless "
-            "you are trying to precisely replicate previous works)."
-        )
-
-        super().__init__(**kwargs)
-
-    def _initialize_simulation(self):
-        self.model = self._mujoco_py.load_model_from_path(self.fullpath)
-        self.sim = self._mujoco_py.MjSim(self.model, nsubsteps=self.n_substeps)
-        self.data = self.sim.data
-        
-        self._env_setup(initial_qpos=self.initial_qpos)
-        self.initial_state = copy.deepcopy(self.sim.get_state())
-
-    def _reset_sim(self):
-        self.sim.set_state(self.initial_state)
-        self.sim.forward()
-        return super()._reset_sim()
-
-    def render(self):
-        width, height = self.width, self.height
-        assert self.render_mode in self.metadata["render_modes"]
-        self._render_callback()
-        if self.render_mode in {
-            "rgb_array",
-            "rgb_array_list",
-        }:
-            self._get_viewer(self.render_mode).render(width, height)
-            # window size used for old mujoco-py:
-            data = self._get_viewer(self.render_mode).read_pixels(
-                width, height, depth=False
-            )
-            # original image is upside-down, so flip it
-            return data[::-1, :, :]
-        elif self.render_mode == "human":
-            self._get_viewer(self.render_mode).render()
-
-    def _get_viewer(
-        self, mode
-    ) -> Union["mujoco_py.MjViewer", "mujoco_py.MjRenderContextOffscreen"]:
-        self.viewer = self._viewers.get(mode)
-        if self.viewer is None:
-            if mode == "human":
-                self.viewer = self._mujoco_py.MjViewer(self.sim)
-
-            elif mode in {
-                "rgb_array",
-                "rgb_array_list",
-            }:
-                self.viewer = self._mujoco_py.MjRenderContextOffscreen(self.sim, -1)
-            self._viewer_setup()
-            self._viewers[mode] = self.viewer
-        return self.viewer
-
-    @property
-    def dt(self):
-        return self.sim.model.opt.timestep * self.sim.nsubsteps
-
-    def _mujoco_step(self, action):
-        self.sim.step()

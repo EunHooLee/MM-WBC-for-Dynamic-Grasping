@@ -49,7 +49,16 @@
         <!-- <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:l_gripper_finger_joint" kp="30000" name="robot0:l_gripper_finger_joint" user="1"></position>
         <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:r_gripper_finger_joint" kp="30000" name="robot0:r_gripper_finger_joint" user="1"></position> -->
 
-        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="robot0:l_gripper_finger_joint" name="robot0:l_gripper_finger_joint" gear="200.0" user="1"></motor>
-        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="robot0:r_gripper_finger_joint" name="robot0:r_gripper_finger_joint" gear="200.0" user="1"></motor>
+        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="robot0:l_gripper_finger_joint" name="robot0:l_gripper_finger_joint" gear="20.0" user="1"></motor>
+        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="robot0:r_gripper_finger_joint" name="robot0:r_gripper_finger_joint" gear="20.0" user="1"></motor>
+        
+        <position name="ee_x"  ctrllimited="true" ctrlrange="-0.005 0.005" site="object0" gear="1 0 0 0 0 0" kp="100"/>
+    	<position name="ee_y"  ctrllimited="true" ctrlrange="-0.005 0.005" site="object0" gear="0 1 0 0 0 0" kp="100"/>
+    	<position name="ee_z"  ctrllimited="true" ctrlrange="0.1962 0.197" site="object0" gear="0 0 1 0 0 0" kp="100"/>
+    	<!-- <position name="ee_rx" ctrllimited="true" ctrlrange="0 0.2" site="object0" gear="0 0 0 1 0 0" kp="100"/>
+    	<position name="ee_ry" ctrllimited="true" ctrlrange="0 0.2" site="object0" gear="0 0 0 0 1 0" kp="100"/> -->
+    	<position name="ee_rz" ctrllimited="true" ctrlrange="-1e-6 1e-6" site="object0" gear="0 0 0 0 0 1" kp="100"/>
+
+    
     </actuator>
 </mujoco>

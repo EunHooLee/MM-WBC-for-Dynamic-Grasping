@@ -2,7 +2,7 @@ import os
 
 from gymnasium.utils.ezpickle import EzPickle
 
-from wbc4dg.envs.mujoco import MujocoMMEnv, MujocoPyMMEnv
+from wbc4dg.envs.mujoco import MujocoMMEnv
 
 
 MODEL_XML_PATH = "dynamic_grasping.xml"
@@ -156,33 +156,6 @@ class MujocoMMDynamicGraspingEnv(MujocoMMEnv, EzPickle):
             obj_range=0.5,                 # object initial range (물체가 초기에 생성될 수 있는 위치의 범위)
             target_range=0.15,
             distance_threshold=0.02,       # For _is_success().
-            initial_qpos=initial_qpos,
-            reward_type=reward_type,
-            **kwargs,
-        )
-        EzPickle.__init__(self, reward_type=reward_type, **kwargs)
-
-
-class MujocoPyMMDynamicGraspingEnv(MujocoPyMMEnv, EzPickle):
-    def __init__(self, reward_type="sparse", **kwargs):
-        initial_qpos = {
-            "robot0:slide0": 0.405,
-            "robot0:slide1": 0.48,
-            "robot0:slide2": 0.0,
-            "object0:joint": [1.25, 0.53, 0.4, 1.0, 0.0, 0.0, 0.0], 
-        }  
-        MujocoPyMMEnv.__init__(
-            self,
-            model_path=MODEL_XML_PATH,
-            has_object=True,                # 항상 True
-            block_gripper=False,            # 항상 False
-            n_substeps=20,                  # ?
-            gripper_extra_height=0.2,       # ? 
-            target_in_the_air=True,         # ?
-            target_offset=0.0,              # ?
-            obj_range=0.15,
-            target_range=0.15,
-            distance_threshold=0.05,
             initial_qpos=initial_qpos,
             reward_type=reward_type,
             **kwargs,
