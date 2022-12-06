@@ -499,7 +499,7 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         
         if self.has_object:
             
-            object_qpos = np.array([1.5, 0.0, 2.3, 1.0, 0.0, 0.0, 0.0])
+            object_qpos = np.array([1.5, 0.0, 2.5, 1.0, 0.0, 0.0, 0.0])
             self._utils.set_joint_qpos(
                 self.model, self.data, "object0:joint", object_qpos
             )
@@ -517,7 +517,7 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         
         # random deployement of the robot
         self.base_pos = self._utils.get_site_xpos(self.model, self.data, "robot0:base_link").copy()
-        robot_x = self.base_pos[1] + self.np_random.uniform(-1.0,0.0)
+        robot_x = self.base_pos[1] + self.np_random.uniform(-1.2,-0.8)
         robot_y = self.base_pos[2] + self.np_random.uniform(-1.0,1.0)
         # robot_x = self.base_pos[1] 
         # robot_y = self.base_pos[2] - np.array([0.2])
