@@ -1,7 +1,8 @@
 from typing import Union
 
 import numpy as np
-
+import random
+import math
 from wbc4dg.envs.mujoco.robot_env import MujocoRobotEnv, MujocoPyRobotEnv
 from gymnasium_robotics.utils import rotations
 
@@ -14,6 +15,14 @@ distance_threshold: 0.02
 def goal_distance(goal_a, goal_b):
     assert goal_a.shape == goal_b.shape
     return np.linalg.norm(goal_a - goal_b, axis=-1)
+
+def start_loc():
+    x=random.uniform(-1.0,-0.7071)
+    y=math.sqrt(1-math.pow(x,2))
+    if random.random()>=0.5:
+        y=-y
+    return np.array([x]), np.array([y])
+
 
 
 def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
@@ -75,26 +84,25 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
                 d = goal_distance(observation[3:6], goal)
                 return -(d > self.distance_threshold).astype(np.float32)
             else:
-                d = goal_distance(observation[3:6], goal)
                 # Compute distance between goal and the achieved goal.
                 r_dist = goal_distance(observation[3:6], goal)
                 r_vel = goal_distance(observation[17:20], np.zeros(3))
-                w_dist = 20
-                w_vel = 10
-
+                w_dist = 10
+                w_vel = 5
+                # print("r_dist,: ", r_dist, "r_Vel: ", r_vel)
                 R_dense = -(w_dist*r_dist) - (w_vel*r_vel) + np.exp(-100*pow(r_dist,2))
                 R_sparse = 0
 
                 if info["is_success"]:
-                    R_sparse = 200
-                elif (r_vel<=0.1 and r_dist>0.1):
+                    R_sparse = 300
+                elif (r_vel<=0.1 and r_dist>0.2):
                     R_sparse = -5.0
-                elif (r_vel>0.1 and r_dist<=0.1):
+                elif (r_vel>0.1 and r_dist<=0.2):
                     R_sparse = -10.0
-                elif (r_vel<=0.1 and r_dist<=0.1):
+                elif (r_vel<=0.1 and r_dist<=0.2):
                     R_sparse = 10.0
 
-                return R_dense+R_sparse
+                return R_dense + R_sparse
 
         # RobotEnv methods
         # ----------------------------
@@ -108,34 +116,18 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
             
             base_ctrl, ee_ctrl, gripper_ctrl = action[:2] ,action[2:9], action[9:]
             # 아래 리미트 설정 한해주면 DOF ~~ Nan, inf 오류뜬다.
-            base_ctrl *= 0.5
+            base_ctrl *= 0.4
             ee_ctrl *= 0.05
+
+            ee_ctrl[1]=0.0
+            ee_ctrl[6]=0.0
             
-
-            # # ----------------------------------------------------
-            # # ########### Action Test Example #############
-            # # mobile base 입력된 action 무시하고 직진하다 대각선 이동.
-            # # manipulator 입력된 action 무시하고 고정.
-            # # gripper 입력된 action에 따라 움직임.
-
-            # # self.a +=0.001  # acc = 0.001
-            # self.a = 0.05     # x_vel 
-            # self.b = 0.05     # y_vel 
-            
-            # if self.k < 1000:
-            #     base_ctrl =[ self.a, 0.0]
-            #     self.k +=1
-            # else:
-            #     base_ctrl = [self.a, self.b]
-            # ee_ctrl = [0.0, 0.0 , 0.0, 0.0, 0.0, 0.0,0.0]
-            # # -----------------------------------------------------
-
             # gripper 대칭 제어
             gripper_ctrl = np.array([gripper_ctrl[0], gripper_ctrl[0]]) # gripper_ctrl[0] 원래 [0] 안해도 됬는데 왜그러지? 11/16
             assert gripper_ctrl.shape == (2,)
             if self.block_gripper: #  gripper 잠김
                 gripper_ctrl = np.zeros_like(gripper_ctrl)
-            # base_ctrl=np.array([0.0,0.0])
+            
             action = np.concatenate([base_ctrl, ee_ctrl, gripper_ctrl])
             return action
 
@@ -225,12 +217,11 @@ def get_base_fetch_env(RobotEnvClass: Union[MujocoPyRobotEnv, MujocoRobotEnv]):
 
         def _is_success(self, observation, desired_goal):
             d = goal_distance(observation[3:6], desired_goal)
-            # v = goal_distance(observation[17:20],np.array([0,0,0]))
-            d_gripper = abs(observation[12]-observation[13])
-            _d = goal_distance(observation[6:9],self._utils.get_site_xpos(self.model, self.data, "table0"))
+        # _d = goal_distance(observation[6:9],self._utils.get_site_xpos(self.model, self.data, "table0"))
+            _d = observation[8]-self._utils.get_site_xpos(self.model, self.data, "plate0")[2]
 
-
-            if (_d>=0.465):
+            # _d = 0.025~0.026
+            if _d >= 0.46 and d <= 0.08:
                 return True
             # return (d < self.distance_threshold).astype(np.float32)
             return False
@@ -457,6 +448,7 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         self.data.time = self.initial_time
         self.data.qpos[:] = np.copy(self.initial_qpos)
         self.data.qvel[:] = np.copy(self.initial_qvel)
+        # print(self.data.qpos)
         # if self.model.na != 0:
         #     self.data.act[:] = None
 
@@ -494,10 +486,9 @@ class MujocoMMEnv(get_base_fetch_env(MujocoRobotEnv)):
         
         # random deployement of the robot
         self.base_pos = self._utils.get_site_xpos(self.model, self.data, "robot0:base_link").copy()
-        robot_x = self.base_pos[1] + self.np_random.uniform(-1.3,-0.8)
-        robot_y = self.base_pos[2] + self.np_random.uniform(-1.0,1.0)
-        # robot_x = self.base_pos[1] + np.array([0.4])
-        # robot_y = self.base_pos[2] 
+        # robot_x = self.base_pos[1] + self.np_random.uniform(-1.0,-0.5)
+        # robot_y = self.base_pos[2] + self.np_random.uniform(-0.5, 0.5)
+        robot_x,robot_y=start_loc()
         self._utils.set_joint_qpos(self.model, self.data, "robot0:base_joint1", robot_x)
         self._utils.set_joint_qpos(self.model, self.data, "robot0:base_joint2", robot_y)
 

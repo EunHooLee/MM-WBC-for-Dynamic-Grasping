@@ -29,8 +29,7 @@
 			<site name="table" pos="0.0 0.0 0.0" size="0.02" rgba="1 0 0 1" type="sphere"></site>
 
 		</body>
-
-
+		
 	</worldbody>
 
 	<include file="actuator.xml"></include>

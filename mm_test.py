@@ -37,19 +37,31 @@ np.random.seed(123456)
 
 # # Agent
 agent = SAC(env.observation_space["observation"].shape[0], env.action_space, gamma=0.99, tau=0.005, alpha=0.2, policy="Gaussian", target_update_interval=True, automatic_entropy_tuning=False, hidden_size=256,lr=0.0003)
-agent.load_model('./Mobile-Manipulator-WBC-for-Dynamic-Grasping-fixed-object_v2/models/sac_actor__best_reward','./Mobile-Manipulator-WBC-for-Dynamic-Grasping-fixed-object_v2/models/sac_critic__best_reward','./Mobile-Manipulator-WBC-for-Dynamic-Grasping-fixed-object_v2/models/sac_value__best_reward')
+# agent.load_model('/home/Mobile-Manipulator-WBC-for-Dynamic-Grasping/models/sac_actor__best_reward',
+# '/home/Mobile-Manipulator-WBC-for-Dynamic-Grasping/models/sac_critic__best_reward',
+# '/home/Mobile-Manipulator-WBC-for-Dynamic-Grasping/models/sac_value__best_reward')
 
-# agent.load_model('./Mobile-Manipulator-WBC-for-Dynamic-Grasping-fixed-object_v2/models/sac_actor__middle','./Mobile-Manipulator-WBC-for-Dynamic-Grasping-fixed-object_v2/models/sac_critic__middle','./Mobile-Manipulator-WBC-for-Dynamic-Grasping-fixed-object_v2/models/sac_value__middle')
+agent.load_model("models/sac_actor__best_reward","models/sac_critic__best_reward","models/sac_value__best_reward")
+
+# agent.load_model('/home/yeoma/code/mm-wbc_v2/models/sac_actor__middle','/home/yeoma/code/mm-wbc_v2/models/sac_critic__middle','/home/yeoma/code/mm-wbc_v2/models/sac_value__middle')
 
 # Memory
 memory = ReplayMemory(1000000, 123456)
 # agent.load_model('/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_actor_robotics_train','/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_critic_robotics_train','/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_value_robotics_train')
-state,_=env.reset()
-terminated = False
-while not terminated:
-    action = agent.select_action(state['observation'], eval=True)
-    next_state, reward, truncated, terminated, _ = env.step(action)
-    state=next_state
-#     env.render() 
 
+terminated = False
+truncated = False
+for i in range(100):
+    state,_=env.reset()
+    truncated = False
+    timesteps = 0
+    while not truncated:
+        action = agent.select_action(state['observation'], eval=True)
+        next_state, reward, truncated, terminated, _ = env.step(action)
+        state = next_state
+        timesteps+=1
+
+        if timesteps == 100:
+            truncated = True
 env.close()
+

@@ -6,8 +6,8 @@
         <geom name="base_link_visual" type="mesh" contype="0" conaffinity="0" group="1" mesh="mobile_base_link" />
         <site name="robot0:base_link" pos="0.0 0.0 0.0" size="0.02" rgba="1 0 0 1" type="sphere"></site>
         <!--controller-->
-        <joint name="robot0:base_joint1" type="slide" pos="0.0 0.0 0.0" axis="1 0 0" limited="true" range="-10 10" damping="15000"/>
-        <joint name="robot0:base_joint2" type="slide" pos="0.0 0.0 0.0" axis="0 1 0" limited="true" range="-10 10" damping="15000"/>
+        <joint name="robot0:base_joint1" type="slide" pos="0.0 0.0 0.0" axis="1 0 0" limited="true" range="-5 5" damping="15000"/>
+        <joint name="robot0:base_joint2" type="slide" pos="0.0 0.0 0.0" axis="0 1 0" limited="true" range="-5 5" damping="15000"/>
     	<inertial diaginertia="1.2869 1.2236 0.9868" mass="70.1294" pos="-0.0036 0 0.0014" quat="0.7605 -0.0133 -0.0061 0.6491"></inertial>
         <!-- husky mobile robot body -->
         <geom size="0.39496 0.28545 0.061875" pos="0 0 0.185625" type="box" />
@@ -44,33 +44,33 @@
             <geom class="visual" mesh="link0_visual"/>
             <body name="link1" pos="0 0 0.333">
                 <inertial pos="-0.0042142 0.02821 -0.0087788" quat="0.917781 -0.277115 0.0606681 0.277858" mass="0.42603" diaginertia="0.00144551 0.00137757 0.000823511" />
-                <joint name="robot0:joint1" range="-2.8973 2.8973" damping="50" frictionloss="5"/>
+                <joint name="robot0:joint1" range="-2.8973 2.8973" damping="100" frictionloss="5"/>
                 <geom class="visual" mesh="link1_visual"/>
                 <geom class="collision" mesh="link1_collision"/>
                 <body name="link2" pos="0 0 0" quat="0.707107 -0.707107 0 0">
                     <inertial pos="-3.3178e-05 -0.12849 0.026337" quat="0.447793 0.894132 -0.00224061 0.00218314" mass="0.56095" diaginertia="0.00319151 0.00311598 0.000980804" />
-                    <joint name="robot0:joint2" range="-1.7628 1.7628" damping="50" frictionloss="2"/>
+                    <joint name="robot0:joint2" range="-1.7628 1.7628" damping="100" frictionloss="2"/>
                     <geom class="visual" mesh="link2_visual"/>
                     <geom class="collision" mesh="link2_collision"/>
                     <body name="link3" pos="0 -0.316 0" quat="0.707107 0.707107 0 0">
                         <inertial pos="0.04223 -0.023258 -0.0096674" quat="0.883205 0.339803 0.323238 0.000542237" mass="0.44463" diaginertia="0.00133227 0.00119126 0.000780475" />
-                        <joint name="robot0:joint3" range="-2.8973 2.8973" damping="50" frictionloss="2"/>
+                        <joint name="robot0:joint3" range="-2.8973 2.8973" damping="100" frictionloss="2"/>
                         <geom class="visual" mesh="link3_visual"/>
                         <geom class="collision" mesh="link3_collision"/>
                         <body name="link4" pos="0.0825 0 0" quat="0.707107 0.707107 0 0">
-                            <joint name="robot0:joint4" range="-3.0718 -0.4" damping="50" frictionloss="0.5"/>
+                            <joint name="robot0:joint4" range="-3.0718 -0.4" damping="100" frictionloss="0.5"/>
                             <geom class="visual" mesh="link4_visual"/>
                             <geom class="collision" mesh="link4_collision"/>
                             <body name="link5" pos="-0.0825 0.384 0" quat="0.707107 -0.707107 0 0">
-                                <joint name="robot0:joint5" range="-2.8973 2.8973" damping="50" frictionloss="1"/>
+                                <joint name="robot0:joint5" range="-2.8973 2.8973" damping="100" frictionloss="1"/>
                                 <geom class="visual" mesh="link5_visual"/>
                                 <geom class="collision" mesh="link5_collision"/>
                                 <body name="link6" pos="0 0 0" quat="0.707107 0.707107 0 0">
-                                    <joint name="robot0:joint6" range="-1.6573 2.1127" damping="50" frictionloss="0.5"/>
+                                    <joint name="robot0:joint6" range="-1.6573 2.1127" damping="100" frictionloss="0.5"/>
                                     <geom class="visual" mesh="link6_visual"/>
                                     <geom class="collision" mesh="link6_collision"/>
                                     <body name="link7" pos="0.088 0 0" euler='1.57 0 0.'>
-                                        <joint name="robot0:joint7" range="-2.8973 2.8973" damping="50" frictionloss="0.5"/>
+                                        <joint name="robot0:joint7" range="-2.8973 2.8973" damping="100" frictionloss="0.5"/>
                                         <geom class="visual" mesh="link7_visual"/>
                                         <geom class="collision" mesh="link7_collision"/>
         								<body name="robot0:gripper_camera_link" pos="0.055 0 0.0225">

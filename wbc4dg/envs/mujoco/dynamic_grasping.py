@@ -132,17 +132,17 @@ class MujocoMMDynamicGraspingEnv(MujocoMMEnv, EzPickle):
     # joint 초기값 (controller X)
     def __init__(self, reward_type="sparse", **kwargs):
         initial_qpos = {
-            "robot0:base_joint1": 1.0,
-            "robot0:base_joint2": -1.0,
-            "robot0:joint1": 0.3,
-            "robot0:joint2": 1.0,
-            "robot0:joint3": -1.0,
-            "robot0:joint4": 1.0,
-            "robot0:joint5": 1.0,
-            "robot0:joint6": -1.0,
-            "robot0:joint7": 1.0,
-            "robot0:l_gripper_finger_joint": 1.0,
-            "robot0:r_gripper_finger_joint": 1.0,
+            "robot0:base_joint1": 0.0,
+            "robot0:base_joint2": 0.0,
+            "robot0:joint1": 0.0,
+            "robot0:joint2": 0.00,
+            "robot0:joint3": 0.0,
+            "robot0:joint4": 0.0,
+            "robot0:joint5": 0.0,
+            "robot0:joint6": 1.51,
+            "robot0:joint7": 0.0,
+            "robot0:l_gripper_finger_joint": 0.03,
+            "robot0:r_gripper_finger_joint": 0.03,
         }  
         MujocoMMEnv.__init__(
             self,
@@ -166,10 +166,9 @@ class MujocoMMDynamicGraspingEnv(MujocoMMEnv, EzPickle):
 class MujocoPyMMDynamicGraspingEnv(MujocoPyMMEnv, EzPickle):
     def __init__(self, reward_type="sparse", **kwargs):
         initial_qpos = {
-            "robot0:slide0": 0.405,
-            "robot0:slide1": 0.48,
-            "robot0:slide2": 0.0,
-            "object0:joint": [1.25, 0.53, 0.4, 1.0, 0.0, 0.0, 0.0], 
+            "robot0:base_joint1": 0.405,
+            "robot0:base_joint2": 0.48,
+            "object0:joint": [0.0, 0.03, 0.0, 0.0, 0.0, 1.32, 0.848], 
         }  
         MujocoPyMMEnv.__init__(
             self,

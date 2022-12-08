@@ -4,14 +4,14 @@ import gymnasium as gym
 import numpy as np
 # import itertools
 import torch
-from torch.utils.tensorboard import SummaryWriter
 from psac.sac import SAC
-# from torch.utils.tensorboard import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
 
 from wbc4dg.envs.mujoco import MujocoMMDynamicGraspingEnv
 from wbc4dg.envs.mujoco import mujoco_utils
 from psac.replay_memory import ReplayMemory
 from wbc4dg.envs.mujoco.utils import distance
+import matplotlib.pyplot as plt
 
 # Environment
 env = MujocoMMDynamicGraspingEnv(reward_type="dense",)
@@ -22,7 +22,6 @@ print("cuda" if torch.cuda.is_available() else "cpu")
 observation,_=env.reset()
 
 writer=SummaryWriter()
-
 
 torch.manual_seed(123456)
 np.random.seed(123456)
@@ -40,13 +39,17 @@ total_numsteps = 0
 print('===========started=============')
 updates = 0
 total_success = 0
-
-for i_episode in range(5000):
+mean_reward_array = []
+mean_reward = 0
+for i_episode in range(10000):
     episode_reward = 0
     episode_steps = 0
     truncated = False
     terminated = False
     observation,_ = env.reset()
+    trigger = True
+    max_steps=200
+    
     
     while not terminated:
 
@@ -67,7 +70,8 @@ for i_episode in range(5000):
         episode_steps += 1
         total_numsteps += 1
         episode_reward += reward
-        mask  = 1 if episode_steps == 150 else float(not terminated)
+        mask  = 1 if episode_steps == max_steps else float(not terminated)
+
         # print("pass",total_numsteps)
         # Ignore the "done" signal if it comes from hitting the time horizon.
         # (https://github.com/openai/spinningup/blob/master/spinup/algos/sac/sac.py)
@@ -75,13 +79,15 @@ for i_episode in range(5000):
 
         memory.push(observation['observation'], action, reward, next_observation['observation'], mask) # Append transition to memory
         observation = next_observation
-        if info["is_success"] == True:
+
+        if trigger == True and info["is_success"] == True:
             total_success +=1
+            trigger=False
         
 
         # print(mask)
-        # print(observation)
-        if episode_steps==150:
+        
+        if episode_steps==max_steps:
             truncated = True
         # elif distance(observation['observation'][:3],observation['observation'][5:8])>4:
         #     truncated =True
@@ -92,18 +98,24 @@ for i_episode in range(5000):
 
         # print("checking: ",terminated,",", truncated)
         
-        
+        mean_reward+=episode_reward
+
         if truncated:
             break
 
 
-    
     if max_reward_train < episode_reward:
         agent.save_model("","best_reward")
         max_reward_train=episode_reward
     
     if i_episode%1000==999:
         agent.save_model("","middle")
+
+    if i_episode%50 == 0:
+        mean = mean_reward / 50
+        mean_reward_array.append(mean)
+        mean_reward=0
+        print("MEAN REWARD: {}".format(mean))
 
     # writer.add_scalar('reward/train', episode_reward, i_episode)
     print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {} toal_success: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2), total_success))
@@ -134,8 +146,13 @@ for i_episode in range(5000):
     #         agent.save_model("robotics","eval")
 
         
-writer.close()
+
 env.close()
+
+writer.close()
+
+
+
 
 # agent.load_checkpoint('/home/yeoma/code/pytorch-soft-actor-critic/checkpoints/sac_checkpoint_hopper-v4_checking',True)
 # observation,_=env.reset()
