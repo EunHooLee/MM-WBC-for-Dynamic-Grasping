@@ -37,9 +37,9 @@ np.random.seed(123456)
 
 # # Agent
 agent = SAC(env.observation_space["observation"].shape[0], env.action_space, gamma=0.99, tau=0.005, alpha=0.2, policy="Gaussian", target_update_interval=True, automatic_entropy_tuning=False, hidden_size=256,lr=0.0003)
-agent.load_model('/home/yeoma/code/mm-wbc/models/sac_actor__best_reward','/home/yeoma/code/mm-wbc/models/sac_critic__best_reward','/home/yeoma/code/mm-wbc/models/sac_value__best_reward')
+agent.load_model('./Mobile-Manipulator-WBC-for-Dynamic-Grasping-fixed-object_v2/models/sac_actor__best_reward','./Mobile-Manipulator-WBC-for-Dynamic-Grasping-fixed-object_v2/models/sac_critic__best_reward','./Mobile-Manipulator-WBC-for-Dynamic-Grasping-fixed-object_v2/models/sac_value__best_reward')
 
-# agent.load_model('/home/yeoma/code/mm-wbc_v2/models/sac_actor__middle','/home/yeoma/code/mm-wbc_v2/models/sac_critic__middle','/home/yeoma/code/mm-wbc_v2/models/sac_value__middle')
+# agent.load_model('./Mobile-Manipulator-WBC-for-Dynamic-Grasping-fixed-object_v2/models/sac_actor__middle','./Mobile-Manipulator-WBC-for-Dynamic-Grasping-fixed-object_v2/models/sac_critic__middle','./Mobile-Manipulator-WBC-for-Dynamic-Grasping-fixed-object_v2/models/sac_value__middle')
 
 # Memory
 memory = ReplayMemory(1000000, 123456)
@@ -49,6 +49,7 @@ terminated = False
 while not terminated:
     action = agent.select_action(state['observation'], eval=True)
     next_state, reward, truncated, terminated, _ = env.step(action)
+    state=next_state
 #     env.render() 
 
 env.close()

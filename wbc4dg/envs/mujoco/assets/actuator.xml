@@ -37,28 +37,22 @@
         <position ctrllimited="true" ctrlrange="-10.0 10.0" joint="robot0:base_joint2" kp="18000" name="robot0:base_joint2" user="1"/>
 
         <!--Panda manipulator joint controller -->
-        <position name="arm_joint1" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint1" kp="4000"/>
-        <position name="arm_joint2" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint2" kp="3000"/>
-        <position name="arm_joint3" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint3" kp="3000"/>
-        <position name="arm_joint4" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint4" kp="2000"/>
-        <position name="arm_joint5" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint5" kp="2000"/>
-        <position name="arm_joint6" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint6" kp="2000"/>
-        <position name="arm_joint7" ctrllimited="true" ctrlrange="-3.14159 3.14159" joint="robot0:joint7" kp="2000"/>
+        <position name="arm_joint1" ctrllimited="true" ctrlrange="-1.577 1.577" joint="robot0:joint1" kp="20000"/>
+        <position name="arm_joint2" ctrllimited="true" ctrlrange="-1.577 1.577" joint="robot0:joint2" kp="20000"/>
+        <position name="arm_joint3" ctrllimited="true" ctrlrange="-1.577 1.577" joint="robot0:joint3" kp="20000"/>
+        <position name="arm_joint4" ctrllimited="true" ctrlrange="-1.577 1.577" joint="robot0:joint4" kp="20000"/>
+        <position name="arm_joint5" ctrllimited="true" ctrlrange="-1.577 1.577" joint="robot0:joint5" kp="20000"/>
+        <position name="arm_joint6" ctrllimited="true" ctrlrange="-1.577 1.577" joint="robot0:joint6" kp="20000"/>
+        <position name="arm_joint7" ctrllimited="true" ctrlrange="-1.577 1.577" joint="robot0:joint7" kp="20000"/>        
+        
+              
         
         <!-- Panda gripper joint controller-->
-        <!-- <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:l_gripper_finger_joint" kp="30000" name="robot0:l_gripper_finger_joint" user="1"></position>
-        <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:r_gripper_finger_joint" kp="30000" name="robot0:r_gripper_finger_joint" user="1"></position> -->
+        <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:l_gripper_finger_joint" kp="30000" name="robot0:l_gripper_finger_joint" user="1"></position>
+        <position ctrllimited="true" ctrlrange="0 0.2" joint="robot0:r_gripper_finger_joint" kp="30000" name="robot0:r_gripper_finger_joint" user="1"></position>
 
-        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="robot0:l_gripper_finger_joint" name="robot0:l_gripper_finger_joint" gear="20.0" user="1"></motor>
-        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="robot0:r_gripper_finger_joint" name="robot0:r_gripper_finger_joint" gear="20.0" user="1"></motor>
-        
-        <position name="ee_x"  ctrllimited="true" ctrlrange="-0.005 0.005" site="object0" gear="1 0 0 0 0 0" kp="100"/>
-    	<position name="ee_y"  ctrllimited="true" ctrlrange="-0.005 0.005" site="object0" gear="0 1 0 0 0 0" kp="100"/>
-    	<position name="ee_z"  ctrllimited="true" ctrlrange="0.1962 0.197" site="object0" gear="0 0 1 0 0 0" kp="100"/>
-    	<!-- <position name="ee_rx" ctrllimited="true" ctrlrange="0 0.2" site="object0" gear="0 0 0 1 0 0" kp="100"/>
-    	<position name="ee_ry" ctrllimited="true" ctrlrange="0 0.2" site="object0" gear="0 0 0 0 1 0" kp="100"/> -->
-    	<position name="ee_rz" ctrllimited="true" ctrlrange="-1e-6 1e-6" site="object0" gear="0 0 0 0 0 1" kp="100"/>
-
-    
+        <!-- <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="robot0:l_gripper_finger_joint" name="robot0:l_gripper_finger_joint" gear="200.0" user="1"></motor>
+        <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="robot0:r_gripper_finger_joint" name="robot0:r_gripper_finger_joint" gear="200.0" user="1"></motor>
+     -->
     </actuator>
 </mujoco>

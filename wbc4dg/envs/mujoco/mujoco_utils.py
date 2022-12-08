@@ -38,13 +38,16 @@ def ctrl_set_action(model, data, action):
     """For torque actuators it copies the action into mujoco ctrl field.
     For position actuators it sets the target relative to the current qpos.
     """
-    print(data.ctrl)
+    
     if len(data.ctrl) > 0:
         for i in range(action.shape[0]):
+            if model.actuator_biastype[i] == 0:
+                data.ctrl[i] = action[i]
+            else:
             # motor position control
-            idx = model.jnt_qposadr[model.actuator_trnid[i,0]]
-            data.ctrl[i] = data.qpos[idx] + action[i]
-
+                idx = model.jnt_qposadr[model.actuator_trnid[i,0]]
+                data.ctrl[i] = data.qpos[idx] + action[i]
+                # print(idx)
 
 def mocap_set_action(model, data, action):
     """The action controls the robot using mocaps. Specifically, bodies
@@ -232,6 +235,7 @@ def get_joint_qvel(model, data, name):
 
 def get_site_xpos(model, data, name):
     site_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, name)
+    
     return data.site_xpos[site_id]
 
 

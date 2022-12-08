@@ -33,6 +33,7 @@ def  main():
         # step
         observation, reward, terminated, truncated, info = env.step(action)
         
+        
     env.close()
 
 

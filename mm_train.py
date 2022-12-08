@@ -4,6 +4,7 @@ import gymnasium as gym
 import numpy as np
 # import itertools
 import torch
+from torch.utils.tensorboard import SummaryWriter
 from psac.sac import SAC
 # from torch.utils.tensorboard import SummaryWriter
 
@@ -20,6 +21,7 @@ print("cuda" if torch.cuda.is_available() else "cpu")
 # print(env._max_episode_steps)
 observation,_=env.reset()
 
+writer=SummaryWriter()
 
 
 torch.manual_seed(123456)
@@ -37,14 +39,14 @@ max_reward_train = -1e9
 total_numsteps = 0
 print('===========started=============')
 updates = 0
+total_success = 0
 
-for i_episode in range(100000):
+for i_episode in range(5000):
     episode_reward = 0
     episode_steps = 0
     truncated = False
     terminated = False
-    observation,_ = env.reset() 
-    
+    observation,_ = env.reset()
     
     while not terminated:
 
@@ -65,8 +67,7 @@ for i_episode in range(100000):
         episode_steps += 1
         total_numsteps += 1
         episode_reward += reward
-        mask  = 1 if episode_steps == 100 else float(not terminated)
-        
+        mask  = 1 if episode_steps == 150 else float(not terminated)
         # print("pass",total_numsteps)
         # Ignore the "done" signal if it comes from hitting the time horizon.
         # (https://github.com/openai/spinningup/blob/master/spinup/algos/sac/sac.py)
@@ -74,27 +75,29 @@ for i_episode in range(100000):
 
         memory.push(observation['observation'], action, reward, next_observation['observation'], mask) # Append transition to memory
         observation = next_observation
-
+        if info["is_success"] == True:
+            total_success +=1
         
 
         # print(mask)
         # print(observation)
-        if episode_steps==100:
-            terminated = True
-        # # elif distance(observation['observation'][:3],observation['observation'][5:8])>4:
-        # #     truncated =True
+        if episode_steps==150:
+            truncated = True
+        # elif distance(observation['observation'][:3],observation['observation'][5:8])>4:
+        #     truncated =True
         else:
-            terminated =False
+            truncated =False
         # print(next_observation)
         # terminated = True if (next_observation[1]>0.2 or next_observation[1]<-0.2) else False
 
         # print("checking: ",terminated,",", truncated)
         
         
-        # if truncated:
-        #     break
+        if truncated:
+            break
 
 
+    
     if max_reward_train < episode_reward:
         agent.save_model("","best_reward")
         max_reward_train=episode_reward
@@ -103,9 +106,8 @@ for i_episode in range(100000):
         agent.save_model("","middle")
 
     # writer.add_scalar('reward/train', episode_reward, i_episode)
-
-    print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2)))
-    
+    print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {} toal_success: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2), total_success))
+    writer.add_scalar("reward",reward,i_episode)
     # if i_episode%1000==999: 
     #     avg_reward = 0.
     #     episodes = 10
@@ -132,7 +134,7 @@ for i_episode in range(100000):
     #         agent.save_model("robotics","eval")
 
         
-
+writer.close()
 env.close()
 
 # agent.load_checkpoint('/home/yeoma/code/pytorch-soft-actor-critic/checkpoints/sac_checkpoint_hopper-v4_checking',True)
