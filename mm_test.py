@@ -5,7 +5,7 @@ import numpy as np
 import itertools
 import torch
 from psac.sac import SAC
-# from torch.utils.tensorboard import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
 
 from wbc4dg.envs.mujoco import MujocoMMDynamicGraspingEnv
 from wbc4dg.envs.mujoco import mujoco_utils

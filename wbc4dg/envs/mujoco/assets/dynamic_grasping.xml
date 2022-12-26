@@ -22,13 +22,27 @@
 			<joint name="object0:joint" type="free" damping="0.01" limited="false"></joint>
 			<geom size="0.02 0.02 0.02" type="box" condim="4" mass="0.5" rgba="0.6 0.9 0.4 1" solimp="1 1 1" solref="0.01 1" friction="1 1 1"/>
 			<site name="object0" pos="0.0 0.0 0.0" size="0.02" rgba="1 0 0 1" type="sphere"></site>
+			<site name="object0:side" pos="-0.02 0.0 0.0" size="0.0002" rgba="1 0 0 1" type="sphere"></site>
+			<site name="object0:side_corner1" pos="-0.02 0.02 0.02" size="0.0002" rgba="1 0 0 1" type="sphere"></site>
+			<site name="object0:side_corner2" pos="-0.02 0.02 -0.02" size="0.0002" rgba="1 0 0 1" type="sphere"></site>
+			<site name="object0:side_corner3" pos="-0.02 -0.02 0.02" size="0.0002" rgba="1 0 0 1" type="sphere"></site>
+			<site name="object0:side_corner4" pos="-0.02 -0.02 -0.02" size="0.0002" rgba="1 0 0 1" type="sphere"></site>
 		</body>
 
-		<body name="table0" pos="1.5 0.0 0.4">
+		<!-- <body name="table0" pos="1.5 0.0 0.4">
 			<geom size="0.3 0.3 0.4" type="box" condim="4" mass="0.5" rgba="0.6 0.9 1.0 1" solimp="1 1 1" solref="0.01 1" friction="1 1 1"/>
 			<site name="table" pos="0.0 0.0 0.0" size="0.02" rgba="1 0 0 1" type="sphere"></site>
 
+		</body> -->
+
+		<body name="plate0" pos="-0.02 0.0 0.0">
+			<joint name="plate0:joint" type="free" damping="0.01" limited="false"></joint>
+			<geom size="0.15 0.15 0.01" type="box" density="567" condim="1" material="" rgba="0.1 0.3 0.6 1"/>
+			<site name="plate" pos="0.0 0.0 0.0" size="0.001" rgba="1 0 0 1" type="sphere"></site>
 		</body>
+
+
+		
 		
 	</worldbody>
 

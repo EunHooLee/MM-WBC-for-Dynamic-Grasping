@@ -127,6 +127,7 @@
     </asset>
 
     <equality>
+        <weld body1="plate0:mocap" body2="plate0" solimp="0.9 0.95 0.001" solref="0.02"></weld>
     </equality>
 
 

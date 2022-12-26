@@ -21,7 +21,8 @@ print("cuda" if torch.cuda.is_available() else "cpu")
 # print(env._max_episode_steps)
 observation,_=env.reset()
 
-writer=SummaryWriter()
+
+
 
 torch.manual_seed(123456)
 np.random.seed(123456)
@@ -31,7 +32,7 @@ agent = SAC(env.observation_space["observation"].shape[0], env.action_space, gam
 # agent.load_model('/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_actor_robotics_middle_check','/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_critic_robotics_middle_check','/home/yeoma/code/Gymnasium-Robotics-develop/models/sac_value_robotics_middle_check`')
 # Memory
 memory = ReplayMemory(1000000, 123456)
-
+writer=SummaryWriter()
 # Training Loop
 max_reward = 0.0
 max_reward_train = -1e9
@@ -41,17 +42,17 @@ updates = 0
 total_success = 0
 mean_reward_array = []
 mean_reward = 0
-for i_episode in range(10000):
+max_step=250
+for i_episode in range(1000000):
     episode_reward = 0
     episode_steps = 0
     truncated = False
     terminated = False
     observation,_ = env.reset()
     trigger = True
-    max_steps=200
     
     
-    while not terminated:
+    while not truncated:
 
         if 1000 > total_numsteps:
             action = env.action_space.sample()  # Sample random action
@@ -70,7 +71,7 @@ for i_episode in range(10000):
         episode_steps += 1
         total_numsteps += 1
         episode_reward += reward
-        mask  = 1 if episode_steps == max_steps else float(not terminated)
+        mask  = 1 if episode_steps == max_step else float(not terminated)
 
         # print("pass",total_numsteps)
         # Ignore the "done" signal if it comes from hitting the time horizon.
@@ -86,8 +87,10 @@ for i_episode in range(10000):
         
 
         # print(mask)
-        
-        if episode_steps==max_steps:
+        if env.obj_is_fallen():
+            break
+
+        if episode_steps==max_step:
             truncated = True
         # elif distance(observation['observation'][:3],observation['observation'][5:8])>4:
         #     truncated =True
@@ -95,8 +98,9 @@ for i_episode in range(10000):
             truncated =False
         # print(next_observation)
         # terminated = True if (next_observation[1]>0.2 or next_observation[1]<-0.2) else False
-
-        # print("checking: ",terminated,",", truncated)
+        # print(np.linalg.norm(observation['observation'][3:6]-observation['observation'][6:9],axis=-1))
+        # if np.linalg.norm(observation['observation'][3:6]-observation['observation'][6:9],axis=-1)>=1.5:
+        #     truncated=True
         
         mean_reward+=episode_reward
 
@@ -119,7 +123,7 @@ for i_episode in range(10000):
 
     # writer.add_scalar('reward/train', episode_reward, i_episode)
     print("Episode: {}, total numsteps: {}, episode steps: {}, reward: {} toal_success: {}".format(i_episode, total_numsteps, episode_steps, round(episode_reward, 2), total_success))
-    writer.add_scalar("reward",reward,i_episode)
+    writer.add_scalar("reward",episode_reward,i_episode)
     # if i_episode%1000==999: 
     #     avg_reward = 0.
     #     episodes = 10
@@ -148,9 +152,7 @@ for i_episode in range(10000):
         
 
 env.close()
-
 writer.close()
-
 
 
 

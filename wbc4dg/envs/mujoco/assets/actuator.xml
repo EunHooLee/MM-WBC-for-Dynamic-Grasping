@@ -39,11 +39,11 @@
         <!--Panda manipulator joint controller -->
 
         <position name="arm_joint1" ctrllimited="true" ctrlrange="-1.570795 1.570795" joint="robot0:joint1" kp="2000"/>
-        <position name="arm_joint2" ctrllimited="true" ctrlrange="-1.570795 1.570795" joint="robot0:joint2" kp="2000"/>
+        <position name="arm_joint2" ctrllimited="true" ctrlrange="-1.0 1.0" joint="robot0:joint2" kp="2000"/>
         <position name="arm_joint3" ctrllimited="true" ctrlrange="-1.570795 1.570795" joint="robot0:joint3" kp="2000"/>
         <position name="arm_joint4" ctrllimited="true" ctrlrange="-1.570795 1.570795" joint="robot0:joint4" kp="2000"/>
         <position name="arm_joint5" ctrllimited="true" ctrlrange="-1.570795 1.570795" joint="robot0:joint5" kp="2000"/>
-        <position name="arm_joint6" ctrllimited="true" ctrlrange="-1.570795 1.570795" joint="robot0:joint6" kp="2000"/>
+        <position name="arm_joint6" ctrllimited="true" ctrlrange="0 3.141592" joint="robot0:joint6" kp="2000"/>
         <position name="arm_joint7" ctrllimited="true" ctrlrange="-1.570795 1.570795" joint="robot0:joint7" kp="2000"/>
         
         <!-- Panda gripper joint controller-->
