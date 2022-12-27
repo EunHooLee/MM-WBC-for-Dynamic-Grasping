@@ -238,6 +238,11 @@ def get_site_xpos(model, data, name):
     
     return data.site_xpos[site_id]
 
+# def get_camera_screen(model, data, name):
+# site_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_CAMERA, name)
+
+# return data.site_xpos[site_id]
+
 
 def get_site_xvelp(model, data, name):
     site_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, name)

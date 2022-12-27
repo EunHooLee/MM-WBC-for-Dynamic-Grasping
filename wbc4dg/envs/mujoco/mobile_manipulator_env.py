@@ -84,12 +84,13 @@ def get_base_fetch_env(RobotEnvClass: MujocoRobotEnv):
                 return -(d > self.distance_threshold).astype(np.float32)
             else:
                 # Compute distance between goal and the achieved goal.
-                r_dist = distance(observation[3:6], goal)
+                r_dist_xy = distance(observation[3:5], goal[:2])
+                r_dist = abs(observation[3:6]- goal)
                 r_vel = distance(observation[17:20], np.zeros(3))
                 w_dist = 0.5
                 w_vel = 0.2
 
-                R_dense = -(w_dist*(r_dist)) - (w_vel*(r_vel)) #+ np.exp(-100*pow(r_dist,2))
+                R_dense = -(w_dist*(r_dist_xy)) - (w_vel*(r_vel)) #+ np.exp(-100*pow(r_dist_xy,2))
                 R_sparse = 0
                 R_mani = 0
                 R_line = 0 
@@ -114,13 +115,7 @@ def get_base_fetch_env(RobotEnvClass: MujocoRobotEnv):
                 sin_gri = self._utils.get_site_xmat(self.model, self.data, "robot0:grip")[1][0]
                 
                 R_line = cos_obj*cos_gri + sin_obj*sin_gri
-
-                # if r_dist<0.02:
-                #     fallen_penalty=-10000
-
-                # if np.linalg.norm(observation[3:6]-observation[6:9],axis=-1)>=1.475:
-                #     fallen_penalty-=10000
-                print("checking ",R_dense, " ", R_sparse, " ", R_mani, " ",fallen_penalty, " ", R_line)
+                print("checking ",observation[3:6])
                 return R_dense +R_mani +fallen_penalty
 
         # RobotEnv methods
